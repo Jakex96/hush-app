@@ -10,30 +10,33 @@ import {
 import { useRouter } from 'expo-router';
 import { Ionicons } from '@expo/vector-icons';
 import { useHushStore } from '../store/hushStore';
+import { getTranslation } from '../constants/translations';
 import { COLORS, SPACING, TYPOGRAPHY } from '../constants/theme';
 
 const { width } = Dimensions.get('window');
 
-const durations = [
-  {
-    id: 'hour',
-    title: '1 Hour',
-    subtitle: 'Quick focus session',
-    icon: 'time-outline',
-    color: COLORS.accent,
-  },
-  {
-    id: 'endOfDay',
-    title: 'Until End of Day',
-    subtitle: 'Deep work mode',
-    icon: 'moon-outline',
-    color: COLORS.accent,
-  },
-];
-
 export default function Duration() {
   const router = useRouter();
-  const { setHushMode } = useHushStore();
+  const { setHushMode, language } = useHushStore();
+
+  const t = (key: Parameters<typeof getTranslation>[1]) => getTranslation(language, key);
+
+  const durations = [
+    {
+      id: 'hour',
+      title: t('oneHour'),
+      subtitle: t('oneHourSubtitle'),
+      icon: 'time-outline',
+      color: COLORS.accent,
+    },
+    {
+      id: 'endOfDay',
+      title: t('untilEndOfDay'),
+      subtitle: t('untilEndOfDaySubtitle'),
+      icon: 'moon-outline',
+      color: COLORS.accent,
+    },
+  ];
 
   const handleSelectDuration = (duration: 'hour' | 'endOfDay') => {
     setHushMode(duration);
@@ -57,12 +60,12 @@ export default function Duration() {
         >
           <Ionicons name="arrow-back" size={28} color={COLORS.text} />
         </TouchableOpacity>
-        <Text style={styles.headerTitle}>Choose Duration</Text>
+        <Text style={styles.headerTitle}>{t('chooseDuration')}</Text>
         <View style={{ width: 28 }} />
       </View>
 
       <View style={styles.content}>
-        <Text style={styles.title}>How long do you{"\n"}want to focus?</Text>
+        <Text style={styles.title}>{t('howLongFocus')}</Text>
         
         <View style={styles.durationsContainer}>
           {durations.map((duration) => (
@@ -94,9 +97,7 @@ export default function Duration() {
 
         <View style={styles.infoBox}>
           <Ionicons name="information-circle-outline" size={20} color={COLORS.textSecondary} />
-          <Text style={styles.infoText}>
-            You won't be able to exit HUSH mode until the time is up
-          </Text>
+          <Text style={styles.infoText}>{t('cannotExitWarning')}</Text>
         </View>
       </View>
     </View>
