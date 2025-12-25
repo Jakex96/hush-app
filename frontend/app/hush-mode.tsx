@@ -303,7 +303,7 @@ const styles = StyleSheet.create({
     borderRadius: 20,
     alignSelf: 'center',
     gap: SPACING.sm,
-    marginBottom: SPACING.xxl,
+    marginBottom: SPACING.lg,
   },
   statusDot: {
     width: 8,
@@ -319,14 +319,15 @@ const styles = StyleSheet.create({
   },
   statusContainer: {
     alignItems: 'center',
-    marginBottom: SPACING.xxl * 1.5,
-    paddingVertical: SPACING.xl,
+    marginBottom: SPACING.xl,
+    paddingVertical: SPACING.lg,
+    paddingHorizontal: SPACING.md,
   },
   hushLabel: {
     ...TYPOGRAPHY.h2,
     color: COLORS.text,
-    marginTop: SPACING.lg,
-    marginBottom: SPACING.sm,
+    marginTop: SPACING.xl,
+    marginBottom: SPACING.md,
     fontWeight: '300',
     letterSpacing: 2,
   },
