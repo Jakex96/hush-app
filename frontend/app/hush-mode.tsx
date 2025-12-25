@@ -254,12 +254,12 @@ export default function HushMode() {
           
           {/* Show either soft text or exact time based on tap */}
           {showExactTime ? (
-            <Text style={styles.exactTimeText}>{timeRemaining} remaining</Text>
+            <Text style={styles.exactTimeText}>{timeRemaining} {t('remaining')}</Text>
           ) : (
             <Text style={styles.softTimeText}>{softTimeText}</Text>
           )}
           
-          <Text style={styles.tapHint}>Tap to {showExactTime ? 'hide' : 'show'} exact time</Text>
+          <Text style={styles.tapHint}>{showExactTime ? t('tapToHide') : t('tapToShow')}</Text>
         </TouchableOpacity>
 
         {/* Essential Apps Section */}
