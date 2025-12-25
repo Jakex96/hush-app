@@ -39,6 +39,7 @@ export const translations = {
     maps: 'Maps',
     pay: 'Pay',
     music: 'Music',
+    camera: 'Camera',
     calculator: 'Calculator',
     
     // Info & Alerts
