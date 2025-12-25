@@ -157,13 +157,13 @@ export default function HushMode() {
       // Set soft time text (non-stressful)
       let softText = '';
       if (duration === 'endOfDay') {
-        softText = 'Ends today';
+        softText = t('endsToday');
       } else if (hours > 0) {
-        softText = hours === 1 ? 'Ends in about an hour' : `Ends in a few hours`;
+        softText = hours === 1 ? t('endsInAboutAnHour') : t('endsInFewHours');
       } else if (minutes > 30) {
-        softText = 'Ends soon';
+        softText = t('endsSoon');
       } else {
-        softText = 'Almost done';
+        softText = t('almostDone');
       }
       setSoftTimeText(softText);
 
