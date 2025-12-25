@@ -264,7 +264,7 @@ export default function HushMode() {
 
         {/* Essential Apps Section */}
         <View style={styles.appsSection}>
-          <Text style={styles.appsTitle}>Essential Apps</Text>
+          <Text style={styles.appsTitle}>{t('essentialApps')}</Text>
           <View style={styles.appsGrid}>
             {ESSENTIAL_APPS.map((app) => (
               <TouchableOpacity
