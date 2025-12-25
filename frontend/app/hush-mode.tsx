@@ -105,6 +105,19 @@ export default function HushMode() {
 
       setTimeRemaining(timeStr);
 
+      // Set soft time text (non-stressful)
+      let softText = '';
+      if (duration === 'endOfDay') {
+        softText = 'Ends today';
+      } else if (hours > 0) {
+        softText = hours === 1 ? 'Ends in about an hour' : `Ends in a few hours`;
+      } else if (minutes > 30) {
+        softText = 'Ends soon';
+      } else {
+        softText = 'Almost done';
+      }
+      setSoftTimeText(softText);
+
       // Calculate progress (for visual effect)
       const totalDuration = endTime - (endTime - remaining);
       const progressPercent = 1 - remaining / totalDuration;
