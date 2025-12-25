@@ -89,9 +89,9 @@ export default function HushMode() {
       'hardwareBackPress',
       () => {
         Alert.alert(
-          'HUSH Mode Active',
-          'You cannot exit HUSH mode until the timer ends.',
-          [{ text: 'OK' }]
+          t('hushModeActiveAlert'),
+          t('cannotExitMessage'),
+          [{ text: t('ok') }]
         );
         return true; // Prevent default behavior
       }
