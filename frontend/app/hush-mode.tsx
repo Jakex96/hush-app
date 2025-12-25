@@ -334,7 +334,8 @@ const styles = StyleSheet.create({
   hushSubtext: {
     ...TYPOGRAPHY.body,
     color: COLORS.textSecondary,
-    marginBottom: SPACING.xl,
+    marginBottom: SPACING.lg,
+    lineHeight: 22,
   },
   progressBarContainer: {
     width: width - SPACING.xl * 4,
@@ -342,7 +343,8 @@ const styles = StyleSheet.create({
     backgroundColor: COLORS.surfaceLight,
     borderRadius: 2,
     overflow: 'hidden',
-    marginBottom: SPACING.md,
+    marginBottom: SPACING.lg,
+    marginTop: SPACING.md,
   },
   progressBar: {
     height: '100%',
@@ -352,22 +354,24 @@ const styles = StyleSheet.create({
   softTimeText: {
     ...TYPOGRAPHY.body,
     color: COLORS.textSecondary,
-    fontSize: 16,
-    marginTop: SPACING.md,
+    fontSize: 15,
+    marginTop: SPACING.sm,
+    marginBottom: SPACING.xs,
   },
   exactTimeText: {
     ...TYPOGRAPHY.body,
     color: COLORS.accent,
-    fontSize: 16,
+    fontSize: 15,
     fontWeight: '600',
-    marginTop: SPACING.md,
+    marginTop: SPACING.sm,
+    marginBottom: SPACING.xs,
   },
   tapHint: {
     ...TYPOGRAPHY.caption,
     color: COLORS.textTertiary,
     fontSize: 11,
     marginTop: SPACING.xs,
-    opacity: 0.6,
+    opacity: 0.5,
   },
   appsSection: {
     flex: 1,
