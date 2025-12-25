@@ -33,14 +33,8 @@ export default function HushMode() {
   const [timeRemaining, setTimeRemaining] = useState('');
   const [progress, setProgress] = useState(0);
 
-  useEffect(() => {
-    // Keep screen awake during HUSH mode
-    activateKeepAwakeAsync();
-
-    return () => {
-      deactivateKeepAwake();
-    };
-  }, []);
+  // Keep screen awake during HUSH mode
+  useKeepAwake();
 
   useEffect(() => {
     // Block back button
