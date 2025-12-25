@@ -142,9 +142,13 @@ export default function HushMode() {
         </View>
 
         {/* Calm Status Display */}
-        <View style={styles.statusContainer}>
+        <TouchableOpacity 
+          style={styles.statusContainer}
+          onPress={() => setShowExactTime(!showExactTime)}
+          activeOpacity={0.8}
+        >
           <Ionicons name="moon" size={80} color={COLORS.accent} />
-          <Text style={styles.hushLabel}>HUSH active</Text>
+          <Text style={styles.hushLabel}>HUSH is active</Text>
           <Text style={styles.hushSubtext}>Stay present, stay calm</Text>
           
           {/* Subtle progress bar */}
@@ -152,9 +156,15 @@ export default function HushMode() {
             <View style={[styles.progressBar, { width: `${progress * 100}%` }]} />
           </View>
           
-          {/* Small time remaining text */}
-          <Text style={styles.timeRemainingSmall}>{timeRemaining} remaining</Text>
-        </View>
+          {/* Show either soft text or exact time based on tap */}
+          {showExactTime ? (
+            <Text style={styles.exactTimeText}>{timeRemaining} remaining</Text>
+          ) : (
+            <Text style={styles.softTimeText}>{softTimeText}</Text>
+          )}
+          
+          <Text style={styles.tapHint}>Tap to {showExactTime ? 'hide' : 'show'} exact time</Text>
+        </TouchableOpacity>
 
         {/* Essential Apps Section */}
         <View style={styles.appsSection}>
