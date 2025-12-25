@@ -74,11 +74,14 @@ const getEssentialApps = (t: (key: any) => string) => [
 
 export default function HushMode() {
   const router = useRouter();
-  const { isHushActive, endTime, deactivateHush, duration } = useHushStore();
+  const { isHushActive, endTime, deactivateHush, duration, language } = useHushStore();
   const [timeRemaining, setTimeRemaining] = useState('');
   const [softTimeText, setSoftTimeText] = useState('');
   const [progress, setProgress] = useState(0);
   const [showExactTime, setShowExactTime] = useState(false);
+
+  const t = (key: Parameters<typeof getTranslation>[1]) => getTranslation(language, key);
+  const ESSENTIAL_APPS = getEssentialApps(t);
 
   useEffect(() => {
     // Block back button
