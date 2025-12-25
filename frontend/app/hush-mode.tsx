@@ -508,7 +508,7 @@ const styles = StyleSheet.create({
     backgroundColor: COLORS.surfaceLight,
     borderRadius: 2,
     overflow: 'hidden',
-    marginBottom: SPACING.sm,
+    marginBottom: SPACING.xs,
     marginTop: SPACING.xs,
   },
   progressBar: {
@@ -519,17 +519,17 @@ const styles = StyleSheet.create({
   softTimeText: {
     ...TYPOGRAPHY.body,
     color: COLORS.textSecondary,
-    fontSize: 14,
-    marginTop: SPACING.xs,
-    marginBottom: SPACING.xs,
+    fontSize: 13,
+    marginTop: 0,
+    marginBottom: 0,
   },
   exactTimeText: {
     ...TYPOGRAPHY.body,
     color: COLORS.accent,
-    fontSize: 14,
+    fontSize: 13,
     fontWeight: '600',
-    marginTop: SPACING.xs,
-    marginBottom: SPACING.xs,
+    marginTop: 0,
+    marginBottom: 0,
   },
   tapHint: {
     ...TYPOGRAPHY.caption,
@@ -539,12 +539,12 @@ const styles = StyleSheet.create({
     opacity: 0.5,
   },
   appsSection: {
-    marginTop: SPACING.xs,
+    marginTop: 0,
   },
   appsTitle: {
-    fontSize: 18,
+    fontSize: 16,
     color: COLORS.text,
-    marginBottom: SPACING.sm,
+    marginBottom: SPACING.xs,
     fontWeight: '600',
   },
   appsGrid: {
