@@ -128,11 +128,11 @@ export default function HushMode() {
         // Timer finished
         deactivateHush();
         Alert.alert(
-          'HUSH Mode Complete! 🎉',
-          'Great job staying focused!',
+          t('hushModeComplete'),
+          t('greatJobFocused'),
           [
             {
-              text: 'Done',
+              text: t('done'),
               onPress: () => router.replace('/'),
             },
           ]
