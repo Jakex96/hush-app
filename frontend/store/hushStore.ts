@@ -1,12 +1,15 @@
 import { create } from 'zustand';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import type { Language } from '../constants/translations';
 
 interface HushState {
   isHushActive: boolean;
   endTime: number | null;
   duration: 'hour' | 'endOfDay' | null;
+  language: Language;
   setHushMode: (duration: 'hour' | 'endOfDay') => void;
   deactivateHush: () => void;
+  setLanguage: (lang: Language) => Promise<void>;
   loadState: () => Promise<void>;
 }
 
@@ -14,6 +17,7 @@ export const useHushStore = create<HushState>((set, get) => ({
   isHushActive: false,
   endTime: null,
   duration: null,
+  language: 'en',
 
   setHushMode: async (duration: 'hour' | 'endOfDay') => {
     const now = Date.now();
