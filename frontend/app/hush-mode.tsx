@@ -263,7 +263,7 @@ export default function HushMode() {
                 onPress={() => launchApp(app)}
               >
                 <View style={[styles.appIcon, { backgroundColor: app.color }]}>
-                  <Ionicons name={app.icon as any} size={32} color="#FFFFFF" />
+                  <Ionicons name={app.icon as any} size={28} color="#FFFFFF" />
                 </View>
                 <Text style={styles.appName}>{app.name}</Text>
               </TouchableOpacity>
