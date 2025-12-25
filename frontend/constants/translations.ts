@@ -97,6 +97,7 @@ export const translations = {
     maps: 'Mapy',
     pay: 'Platby',
     music: 'Hudba',
+    camera: 'Fotoaparát',
     calculator: 'Kalkulačka',
     
     // Info & Alerts
