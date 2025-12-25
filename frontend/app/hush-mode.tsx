@@ -234,7 +234,7 @@ export default function HushMode() {
         {/* Status Badge */}
         <View style={styles.statusBadge}>
           <View style={styles.statusDot} />
-          <Text style={styles.statusText}>HUSH MODE ACTIVE</Text>
+          <Text style={styles.statusText}>{t('hushModeActive')}</Text>
         </View>
 
         {/* Calm Status Display */}
