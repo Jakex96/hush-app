@@ -33,8 +33,21 @@ export default function HushMode() {
   const [timeRemaining, setTimeRemaining] = useState('');
   const [progress, setProgress] = useState(0);
 
-  // Keep screen awake during HUSH mode
-  useKeepAwake();
+  // Keep screen awake on mobile (web doesn't support this)
+  useEffect(() => {
+    if (Platform.OS !== 'web') {
+      const keepAwake = async () => {
+        try {
+          const { activateKeepAwakeAsync, deactivateKeepAwake } = await import('expo-keep-awake');
+          activateKeepAwakeAsync();
+          return () => deactivateKeepAwake();
+        } catch (e) {
+          // Keep awake not available on web
+        }
+      };
+      keepAwake();
+    }
+  }, []);
 
   useEffect(() => {
     // Block back button
