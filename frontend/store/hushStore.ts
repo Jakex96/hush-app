@@ -47,8 +47,20 @@ export const useHushStore = create<HushState>((set, get) => ({
     await AsyncStorage.removeItem('hushState');
   },
 
+  setLanguage: async (lang: Language) => {
+    set({ language: lang });
+    await AsyncStorage.setItem('language', lang);
+  },
+
   loadState: async () => {
     try {
+      // Load language
+      const savedLanguage = await AsyncStorage.getItem('language');
+      if (savedLanguage) {
+        set({ language: savedLanguage as Language });
+      }
+      
+      // Load HUSH state
       const savedState = await AsyncStorage.getItem('hushState');
       if (savedState) {
         const { isHushActive, endTime, duration } = JSON.parse(savedState);
