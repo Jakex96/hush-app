@@ -286,7 +286,7 @@ export default function HushMode() {
         <View style={styles.infoContainer}>
           <Ionicons name="lock-closed" size={16} color={COLORS.textTertiary} />
           <Text style={styles.infoText}>
-            All other apps are blocked until timer ends
+            {t('allOtherAppsBlocked')}
           </Text>
         </View>
       </View>
