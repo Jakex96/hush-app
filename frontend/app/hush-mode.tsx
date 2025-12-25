@@ -244,8 +244,8 @@ export default function HushMode() {
           activeOpacity={0.8}
         >
           <Ionicons name="moon" size={56} color={COLORS.accent} />
-          <Text style={styles.hushLabel}>HUSH is active</Text>
-          <Text style={styles.hushSubtext}>Stay present, stay calm</Text>
+          <Text style={styles.hushLabel}>{t('hushIsActive')}</Text>
+          <Text style={styles.hushSubtext}>{t('stayPresentCalm')}</Text>
           
           {/* Subtle progress bar */}
           <View style={styles.progressBarContainer}>
