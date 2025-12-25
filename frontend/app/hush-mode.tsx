@@ -399,13 +399,13 @@ const styles = StyleSheet.create({
   appIcon: {
     width: 48,
     height: 48,
-    borderRadius: 16,
+    borderRadius: 12,
     alignItems: 'center',
     justifyContent: 'center',
-    marginBottom: SPACING.sm,
+    marginBottom: SPACING.xs,
   },
   appName: {
-    ...TYPOGRAPHY.caption,
+    fontSize: 12,
     color: COLORS.text,
     textAlign: 'center',
   },
@@ -413,11 +413,12 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'center',
-    gap: SPACING.sm,
-    paddingVertical: SPACING.lg,
+    gap: SPACING.xs,
+    paddingVertical: SPACING.md,
+    marginTop: SPACING.sm,
   },
   infoText: {
-    ...TYPOGRAPHY.caption,
+    fontSize: 11,
     color: COLORS.textTertiary,
   },
 });
