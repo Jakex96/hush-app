@@ -10,13 +10,15 @@ import {
 import { useRouter } from 'expo-router';
 import { Ionicons } from '@expo/vector-icons';
 import { useHushStore } from '../store/hushStore';
+import { getTranslation } from '../constants/translations';
+import { LanguageSwitcher } from '../components/LanguageSwitcher';
 import { COLORS, SPACING, TYPOGRAPHY } from '../constants/theme';
 
 const { width } = Dimensions.get('window');
 
 export default function Home() {
   const router = useRouter();
-  const { isHushActive, loadState } = useHushStore();
+  const { isHushActive, loadState, language } = useHushStore();
 
   useEffect(() => {
     // Load saved state on mount
@@ -34,9 +36,16 @@ export default function Home() {
     router.push('/duration');
   };
 
+  const t = (key: Parameters<typeof getTranslation>[1]) => getTranslation(language, key);
+
   return (
     <View style={styles.container}>
       <StatusBar barStyle="light-content" backgroundColor={COLORS.background} />
+      
+      {/* Language Switcher */}
+      <View style={styles.languageContainer}>
+        <LanguageSwitcher />
+      </View>
       
       <View style={styles.content}>
         {/* Logo/Icon */}
@@ -45,16 +54,12 @@ export default function Home() {
         </View>
 
         {/* App Name */}
-        <Text style={styles.title}>HUSH</Text>
-        <Text style={styles.subtitle}>Find your calm</Text>
+        <Text style={styles.title}>{t('appName')}</Text>
+        <Text style={styles.subtitle}>{t('tagline')}</Text>
 
         {/* Description */}
         <View style={styles.descriptionContainer}>
-          <Text style={styles.description}>
-            Block distractions.{"\n"}
-            Stay focused.{"\n"}
-            Reclaim your time.
-          </Text>
+          <Text style={styles.description}>{t('homeDescription')}</Text>
         </View>
 
         {/* Main CTA Button */}
@@ -63,14 +68,12 @@ export default function Home() {
           onPress={handleEnterHush}
           activeOpacity={0.8}
         >
-          <Text style={styles.mainButtonText}>Enter HUSH Mode</Text>
+          <Text style={styles.mainButtonText}>{t('enterHushMode')}</Text>
           <Ionicons name="arrow-forward" size={24} color={COLORS.text} />
         </TouchableOpacity>
 
         {/* Info Text */}
-        <Text style={styles.infoText}>
-          Your essential apps will remain accessible
-        </Text>
+        <Text style={styles.infoText}>{t('essentialsAccessible')}</Text>
       </View>
     </View>
   );
@@ -80,6 +83,12 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: COLORS.background,
+  },
+  languageContainer: {
+    position: 'absolute',
+    top: SPACING.xxl + SPACING.md,
+    right: SPACING.lg,
+    zIndex: 10,
   },
   content: {
     flex: 1,
