@@ -213,25 +213,41 @@ const styles = StyleSheet.create({
     fontWeight: '600',
     letterSpacing: 1,
   },
-  timerContainer: {
+  statusContainer: {
     alignItems: 'center',
     marginBottom: SPACING.xxl * 1.5,
+    paddingVertical: SPACING.xl,
   },
-  timerLabel: {
+  hushLabel: {
+    ...TYPOGRAPHY.h2,
+    color: COLORS.text,
+    marginTop: SPACING.lg,
+    marginBottom: SPACING.sm,
+    fontWeight: '300',
+    letterSpacing: 2,
+  },
+  hushSubtext: {
     ...TYPOGRAPHY.body,
     color: COLORS.textSecondary,
+    marginBottom: SPACING.xl,
+  },
+  progressBarContainer: {
+    width: width - SPACING.xl * 4,
+    height: 4,
+    backgroundColor: COLORS.surfaceLight,
+    borderRadius: 2,
+    overflow: 'hidden',
     marginBottom: SPACING.md,
   },
-  timer: {
-    fontSize: 72,
-    fontWeight: '700',
-    color: COLORS.accent,
-    letterSpacing: -2,
-    marginBottom: SPACING.sm,
+  progressBar: {
+    height: '100%',
+    backgroundColor: COLORS.accent,
+    borderRadius: 2,
   },
-  timerSubtext: {
-    ...TYPOGRAPHY.bodyLarge,
+  timeRemainingSmall: {
+    ...TYPOGRAPHY.caption,
     color: COLORS.textTertiary,
+    fontSize: 12,
   },
   appsSection: {
     flex: 1,
