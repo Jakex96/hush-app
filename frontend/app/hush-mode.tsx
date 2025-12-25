@@ -15,48 +15,56 @@ import {
 import { useRouter } from 'expo-router';
 import { Ionicons } from '@expo/vector-icons';
 import { useHushStore } from '../store/hushStore';
+import { getTranslation } from '../constants/translations';
 import { COLORS, SPACING, TYPOGRAPHY } from '../constants/theme';
 
 const { width } = Dimensions.get('window');
 
-const ESSENTIAL_APPS = [
+const getEssentialApps = (t: (key: any) => string) => [
   { 
-    name: 'Phone', 
+    name: t('phone'), 
     icon: 'call', 
     color: '#4CAF50',
     androidPackage: 'com.android.dialer',
     iosUrl: 'tel://',
   },
   { 
-    name: 'Messages', 
+    name: t('messages'), 
     icon: 'chatbubbles', 
     color: '#2196F3',
     androidPackage: 'com.android.mms',
     iosUrl: 'sms://',
   },
+  {
+    name: t('email'),
+    icon: 'mail',
+    color: '#FF5722',
+    androidPackage: 'com.google.android.gm',
+    iosUrl: 'mailto://',
+  },
   { 
-    name: 'Maps', 
+    name: t('maps'), 
     icon: 'map', 
     color: '#FF9800',
     androidPackage: 'com.google.android.apps.maps',
     iosUrl: 'maps://',
   },
   { 
-    name: 'Pay', 
+    name: t('pay'), 
     icon: 'card', 
     color: '#9C27B0',
     androidPackage: 'com.google.android.apps.walletnfcrel',
     iosUrl: null,
   },
   { 
-    name: 'Music', 
+    name: t('music'), 
     icon: 'musical-notes', 
     color: '#E91E63',
     androidPackage: 'com.google.android.music',
     iosUrl: 'music://',
   },
   { 
-    name: 'Calculator', 
+    name: t('calculator'), 
     icon: 'calculator', 
     color: '#607D8B',
     androidPackage: 'com.android.calculator2',
