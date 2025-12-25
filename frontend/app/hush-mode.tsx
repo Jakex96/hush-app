@@ -335,9 +335,9 @@ const styles = StyleSheet.create({
   hushSubtext: {
     ...TYPOGRAPHY.body,
     color: COLORS.textSecondary,
-    marginBottom: SPACING.md,
+    marginBottom: SPACING.sm,
     lineHeight: 20,
-    fontSize: 15,
+    fontSize: 14,
   },
   progressBarContainer: {
     width: width - SPACING.xl * 4,
@@ -345,8 +345,8 @@ const styles = StyleSheet.create({
     backgroundColor: COLORS.surfaceLight,
     borderRadius: 2,
     overflow: 'hidden',
-    marginBottom: SPACING.md,
-    marginTop: SPACING.sm,
+    marginBottom: SPACING.sm,
+    marginTop: SPACING.xs,
   },
   progressBar: {
     height: '100%',
