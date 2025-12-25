@@ -168,6 +168,53 @@ export default function HushMode() {
     return () => clearInterval(interval);
   }, [isHushActive, endTime]);
 
+  // Function to launch essential apps
+  const launchApp = async (app: typeof ESSENTIAL_APPS[0]) => {
+    try {
+      if (Platform.OS === 'android') {
+        // Try to open Android app via package name
+        const url = `intent://#Intent;package=${app.androidPackage};end`;
+        const canOpen = await Linking.canOpenURL(url);
+        if (canOpen) {
+          await Linking.openURL(url);
+        } else {
+          // Fallback: Show which app to open
+          Alert.alert(
+            app.name,
+            `Please open ${app.name} from your app drawer.`,
+            [{ text: 'OK' }]
+          );
+        }
+      } else if (Platform.OS === 'ios' && app.iosUrl) {
+        // iOS URL scheme
+        const canOpen = await Linking.canOpenURL(app.iosUrl);
+        if (canOpen) {
+          await Linking.openURL(app.iosUrl);
+        } else {
+          Alert.alert(
+            app.name,
+            `Please open ${app.name} from your home screen.`,
+            [{ text: 'OK' }]
+          );
+        }
+      } else {
+        // Web or unsupported platform
+        Alert.alert(
+          app.name,
+          `${app.name} will open automatically on a real device.`,
+          [{ text: 'OK' }]
+        );
+      }
+    } catch (error) {
+      console.error(`Error launching ${app.name}:`, error);
+      Alert.alert(
+        app.name,
+        `Please open ${app.name} manually from your device.`,
+        [{ text: 'OK' }]
+      );
+    }
+  };
+
   return (
     <View style={styles.container}>
       <StatusBar barStyle="light-content" backgroundColor={COLORS.background} />
