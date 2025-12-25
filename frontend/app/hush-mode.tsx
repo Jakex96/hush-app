@@ -269,10 +269,25 @@ const styles = StyleSheet.create({
     backgroundColor: COLORS.accent,
     borderRadius: 2,
   },
-  timeRemainingSmall: {
+  softTimeText: {
+    ...TYPOGRAPHY.body,
+    color: COLORS.textSecondary,
+    fontSize: 16,
+    marginTop: SPACING.md,
+  },
+  exactTimeText: {
+    ...TYPOGRAPHY.body,
+    color: COLORS.accent,
+    fontSize: 16,
+    fontWeight: '600',
+    marginTop: SPACING.md,
+  },
+  tapHint: {
     ...TYPOGRAPHY.caption,
     color: COLORS.textTertiary,
-    fontSize: 12,
+    fontSize: 11,
+    marginTop: SPACING.xs,
+    opacity: 0.6,
   },
   appsSection: {
     flex: 1,
