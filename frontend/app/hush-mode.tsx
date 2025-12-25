@@ -389,10 +389,72 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: COLORS.background,
   },
+  header: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    paddingHorizontal: SPACING.md,
+    paddingTop: SPACING.xxl + SPACING.sm,
+    paddingBottom: SPACING.sm,
+  },
+  headerButton: {
+    padding: SPACING.sm,
+    borderRadius: 8,
+    backgroundColor: COLORS.surface,
+  },
+  modalOverlay: {
+    flex: 1,
+    backgroundColor: 'rgba(0, 0, 0, 0.85)',
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  modalContent: {
+    backgroundColor: COLORS.surface,
+    borderRadius: 16,
+    padding: SPACING.xl,
+    width: width - SPACING.xl * 4,
+    alignItems: 'center',
+  },
+  modalTitle: {
+    ...TYPOGRAPHY.h3,
+    color: COLORS.text,
+    marginBottom: SPACING.lg,
+  },
+  languageOptions: {
+    width: '100%',
+    gap: SPACING.md,
+    marginBottom: SPACING.lg,
+  },
+  languageButton: {
+    paddingVertical: SPACING.md,
+    paddingHorizontal: SPACING.lg,
+    borderRadius: 12,
+    backgroundColor: COLORS.surfaceLight,
+    alignItems: 'center',
+  },
+  languageButtonActive: {
+    backgroundColor: COLORS.accent,
+  },
+  languageButtonText: {
+    ...TYPOGRAPHY.body,
+    color: COLORS.textSecondary,
+    fontWeight: '600',
+  },
+  languageButtonTextActive: {
+    color: COLORS.text,
+  },
+  closeButton: {
+    paddingVertical: SPACING.sm,
+    paddingHorizontal: SPACING.lg,
+  },
+  closeButtonText: {
+    ...TYPOGRAPHY.caption,
+    color: COLORS.textSecondary,
+  },
   content: {
     flex: 1,
     paddingHorizontal: SPACING.lg,
-    paddingTop: SPACING.lg,
+    paddingTop: SPACING.xs,
     paddingBottom: SPACING.xs,
   },
   statusBadge: {
