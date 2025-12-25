@@ -239,6 +239,87 @@ export default function HushMode() {
     <View style={styles.container}>
       <StatusBar barStyle="light-content" backgroundColor={COLORS.background} />
       
+      {/* Header with Back and Settings */}
+      <View style={styles.header}>
+        <TouchableOpacity
+          onPress={() => router.push('/')}
+          style={styles.headerButton}
+          activeOpacity={0.7}
+        >
+          <Ionicons name="arrow-back" size={24} color={COLORS.text} />
+        </TouchableOpacity>
+        
+        <TouchableOpacity
+          onPress={() => setShowSettings(true)}
+          style={styles.headerButton}
+          activeOpacity={0.7}
+        >
+          <Ionicons name="settings-outline" size={24} color={COLORS.text} />
+        </TouchableOpacity>
+      </View>
+
+      {/* Settings Modal */}
+      <Modal
+        visible={showSettings}
+        transparent={true}
+        animationType="fade"
+        onRequestClose={() => setShowSettings(false)}
+      >
+        <TouchableOpacity 
+          style={styles.modalOverlay}
+          activeOpacity={1}
+          onPress={() => setShowSettings(false)}
+        >
+          <View style={styles.modalContent} onStartShouldSetResponder={() => true}>
+            <Text style={styles.modalTitle}>Language / Jazyk</Text>
+            
+            <View style={styles.languageOptions}>
+              <TouchableOpacity
+                style={[
+                  styles.languageButton,
+                  language === 'en' && styles.languageButtonActive
+                ]}
+                onPress={() => {
+                  setLanguage('en');
+                  setShowSettings(false);
+                }}
+                activeOpacity={0.7}
+              >
+                <Text style={[
+                  styles.languageButtonText,
+                  language === 'en' && styles.languageButtonTextActive
+                ]}>English</Text>
+              </TouchableOpacity>
+              
+              <TouchableOpacity
+                style={[
+                  styles.languageButton,
+                  language === 'cs' && styles.languageButtonActive
+                ]}
+                onPress={() => {
+                  setLanguage('cs');
+                  setShowSettings(false);
+                }}
+                activeOpacity={0.7}
+              >
+                <Text style={[
+                  styles.languageButtonText,
+                  language === 'cs' && styles.languageButtonTextActive
+                ]}>Čeština</Text>
+              </TouchableOpacity>
+            </View>
+            
+            <TouchableOpacity
+              style={styles.closeButton}
+              onPress={() => setShowSettings(false)}
+              activeOpacity={0.7}
+            >
+              <Text style={styles.closeButtonText}>Close / Zavřít</Text>
+            </TouchableOpacity>
+          </View>
+        </TouchableOpacity>
+      </Modal>
+      
       <View style={styles.content}>
         {/* Status Badge */}
         <View style={styles.statusBadge}>
