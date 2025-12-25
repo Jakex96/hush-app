@@ -126,11 +126,19 @@ export default function HushMode() {
           <Text style={styles.statusText}>HUSH MODE ACTIVE</Text>
         </View>
 
-        {/* Timer */}
-        <View style={styles.timerContainer}>
-          <Text style={styles.timerLabel}>Time Remaining</Text>
-          <Text style={styles.timer}>{timeRemaining}</Text>
-          <Text style={styles.timerSubtext}>Stay focused</Text>
+        {/* Calm Status Display */}
+        <View style={styles.statusContainer}>
+          <Ionicons name="moon" size={80} color={COLORS.accent} />
+          <Text style={styles.hushLabel}>HUSH active</Text>
+          <Text style={styles.hushSubtext}>Stay present, stay calm</Text>
+          
+          {/* Subtle progress bar */}
+          <View style={styles.progressBarContainer}>
+            <View style={[styles.progressBar, { width: `${progress * 100}%` }]} />
+          </View>
+          
+          {/* Small time remaining text */}
+          <Text style={styles.timeRemainingSmall}>{timeRemaining} remaining</Text>
         </View>
 
         {/* Essential Apps Section */}
