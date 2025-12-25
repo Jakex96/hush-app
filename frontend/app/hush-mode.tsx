@@ -9,10 +9,10 @@ import {
   AppState,
   BackHandler,
   Alert,
+  Platform,
 } from 'react-native';
 import { useRouter } from 'expo-router';
 import { Ionicons } from '@expo/vector-icons';
-import { useKeepAwake } from 'expo-keep-awake';
 import { useHushStore } from '../store/hushStore';
 import { COLORS, SPACING, TYPOGRAPHY } from '../constants/theme';
 
