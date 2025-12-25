@@ -260,13 +260,7 @@ export default function HushMode() {
                 key={app.name}
                 style={styles.appCard}
                 activeOpacity={0.7}
-                onPress={() => {
-                  Alert.alert(
-                    app.name,
-                    'In the full version, this would open ' + app.name + '.',
-                    [{ text: 'OK' }]
-                  );
-                }}
+                onPress={() => launchApp(app)}
               >
                 <View style={[styles.appIcon, { backgroundColor: app.color }]}>
                   <Ionicons name={app.icon as any} size={32} color="#FFFFFF" />
