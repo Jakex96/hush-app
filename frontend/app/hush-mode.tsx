@@ -483,14 +483,14 @@ const styles = StyleSheet.create({
   },
   statusContainer: {
     alignItems: 'center',
-    marginBottom: SPACING.xs,
-    paddingVertical: SPACING.sm,
+    marginBottom: 0,
+    paddingVertical: SPACING.xs,
     paddingHorizontal: SPACING.md,
   },
   hushLabel: {
-    fontSize: 28,
+    fontSize: 24,
     color: COLORS.text,
-    marginTop: SPACING.md,
+    marginTop: SPACING.sm,
     marginBottom: SPACING.xs,
     fontWeight: '300',
     letterSpacing: 2,
@@ -498,9 +498,9 @@ const styles = StyleSheet.create({
   hushSubtext: {
     ...TYPOGRAPHY.body,
     color: COLORS.textSecondary,
-    marginBottom: SPACING.sm,
-    lineHeight: 20,
-    fontSize: 14,
+    marginBottom: SPACING.xs,
+    lineHeight: 18,
+    fontSize: 13,
   },
   progressBarContainer: {
     width: width - SPACING.xl * 4,
