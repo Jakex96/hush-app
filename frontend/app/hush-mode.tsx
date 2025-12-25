@@ -291,7 +291,8 @@ const styles = StyleSheet.create({
   content: {
     flex: 1,
     paddingHorizontal: SPACING.xl,
-    paddingTop: SPACING.xxl + SPACING.md,
+    paddingTop: SPACING.xl,
+    paddingBottom: SPACING.md,
   },
   statusBadge: {
     flexDirection: 'row',
@@ -303,7 +304,7 @@ const styles = StyleSheet.create({
     borderRadius: 20,
     alignSelf: 'center',
     gap: SPACING.sm,
-    marginBottom: SPACING.lg,
+    marginBottom: SPACING.md,
   },
   statusDot: {
     width: 8,
@@ -319,15 +320,15 @@ const styles = StyleSheet.create({
   },
   statusContainer: {
     alignItems: 'center',
-    marginBottom: SPACING.xl,
-    paddingVertical: SPACING.lg,
+    marginBottom: SPACING.md,
+    paddingVertical: SPACING.md,
     paddingHorizontal: SPACING.md,
   },
   hushLabel: {
-    ...TYPOGRAPHY.h2,
+    fontSize: 28,
     color: COLORS.text,
-    marginTop: SPACING.xl,
-    marginBottom: SPACING.md,
+    marginTop: SPACING.md,
+    marginBottom: SPACING.xs,
     fontWeight: '300',
     letterSpacing: 2,
   },
