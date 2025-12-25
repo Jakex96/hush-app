@@ -333,7 +333,7 @@ export default function HushMode() {
           onPress={() => setShowExactTime(!showExactTime)}
           activeOpacity={0.8}
         >
-          <Ionicons name="moon" size={56} color={COLORS.accent} />
+          <Ionicons name="moon" size={48} color={COLORS.accent} />
           <Text style={styles.hushLabel}>{t('hushIsActive')}</Text>
           <Text style={styles.hushSubtext}>{t('stayPresentCalm')}</Text>
           
