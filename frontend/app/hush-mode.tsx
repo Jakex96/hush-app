@@ -9,6 +9,8 @@ import {
   AppState,
   BackHandler,
   Alert,
+  Linking,
+  Platform,
 } from 'react-native';
 import { useRouter } from 'expo-router';
 import { Ionicons } from '@expo/vector-icons';
@@ -18,12 +20,48 @@ import { COLORS, SPACING, TYPOGRAPHY } from '../constants/theme';
 const { width } = Dimensions.get('window');
 
 const ESSENTIAL_APPS = [
-  { name: 'Phone', icon: 'call', color: '#4CAF50' },
-  { name: 'Messages', icon: 'chatbubbles', color: '#2196F3' },
-  { name: 'Maps', icon: 'map', color: '#FF9800' },
-  { name: 'Pay', icon: 'card', color: '#9C27B0' },
-  { name: 'Music', icon: 'musical-notes', color: '#E91E63' },
-  { name: 'Calculator', icon: 'calculator', color: '#607D8B' },
+  { 
+    name: 'Phone', 
+    icon: 'call', 
+    color: '#4CAF50',
+    androidPackage: 'com.android.dialer',
+    iosUrl: 'tel://',
+  },
+  { 
+    name: 'Messages', 
+    icon: 'chatbubbles', 
+    color: '#2196F3',
+    androidPackage: 'com.android.mms',
+    iosUrl: 'sms://',
+  },
+  { 
+    name: 'Maps', 
+    icon: 'map', 
+    color: '#FF9800',
+    androidPackage: 'com.google.android.apps.maps',
+    iosUrl: 'maps://',
+  },
+  { 
+    name: 'Pay', 
+    icon: 'card', 
+    color: '#9C27B0',
+    androidPackage: 'com.google.android.apps.walletnfcrel',
+    iosUrl: null,
+  },
+  { 
+    name: 'Music', 
+    icon: 'musical-notes', 
+    color: '#E91E63',
+    androidPackage: 'com.google.android.music',
+    iosUrl: 'music://',
+  },
+  { 
+    name: 'Calculator', 
+    icon: 'calculator', 
+    color: '#607D8B',
+    androidPackage: 'com.android.calculator2',
+    iosUrl: null,
+  },
 ];
 
 export default function HushMode() {
