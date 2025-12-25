@@ -320,8 +320,8 @@ const styles = StyleSheet.create({
   },
   statusContainer: {
     alignItems: 'center',
-    marginBottom: SPACING.md,
-    paddingVertical: SPACING.md,
+    marginBottom: SPACING.xs,
+    paddingVertical: SPACING.sm,
     paddingHorizontal: SPACING.md,
   },
   hushLabel: {
