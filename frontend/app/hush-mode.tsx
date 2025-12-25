@@ -28,9 +28,11 @@ const ESSENTIAL_APPS = [
 
 export default function HushMode() {
   const router = useRouter();
-  const { isHushActive, endTime, deactivateHush } = useHushStore();
+  const { isHushActive, endTime, deactivateHush, duration } = useHushStore();
   const [timeRemaining, setTimeRemaining] = useState('');
+  const [softTimeText, setSoftTimeText] = useState('');
   const [progress, setProgress] = useState(0);
+  const [showExactTime, setShowExactTime] = useState(false);
 
   useEffect(() => {
     // Block back button
