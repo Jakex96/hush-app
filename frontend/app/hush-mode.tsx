@@ -11,6 +11,7 @@ import {
   Alert,
   Linking,
   Platform,
+  Modal,
 } from 'react-native';
 import { useRouter } from 'expo-router';
 import { Ionicons } from '@expo/vector-icons';
@@ -62,6 +63,13 @@ const getEssentialApps = (t: (key: any) => string) => [
     color: '#E91E63',
     androidPackage: 'com.google.android.music',
     iosUrl: 'music://',
+  },
+  {
+    name: t('camera'),
+    icon: 'camera',
+    color: '#00BCD4',
+    androidPackage: 'com.android.camera2',
+    iosUrl: null,
   },
   { 
     name: t('calculator'), 
