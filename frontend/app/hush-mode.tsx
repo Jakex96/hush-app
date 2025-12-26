@@ -28,6 +28,7 @@ const getEssentialApps = (t: (key: any) => string) => [
     color: '#4CAF50',
     androidPackage: 'com.android.dialer',
     iosUrl: 'tel://',
+    route: null,
   },
   { 
     name: t('messages'), 
@@ -35,6 +36,7 @@ const getEssentialApps = (t: (key: any) => string) => [
     color: '#2196F3',
     androidPackage: 'com.android.mms',
     iosUrl: 'sms://',
+    route: null,
   },
   {
     name: t('email'),
@@ -42,6 +44,7 @@ const getEssentialApps = (t: (key: any) => string) => [
     color: '#FF5722',
     androidPackage: 'com.google.android.gm',
     iosUrl: 'mailto://',
+    route: null,
   },
   { 
     name: t('maps'), 
@@ -49,13 +52,15 @@ const getEssentialApps = (t: (key: any) => string) => [
     color: '#FF9800',
     androidPackage: 'com.google.android.apps.maps',
     iosUrl: 'maps://',
+    route: null,
   },
-  { 
-    name: t('pay'), 
-    icon: 'card', 
+  {
+    name: t('notes'),
+    icon: 'document-text',
     color: '#9C27B0',
-    androidPackage: 'com.google.android.apps.walletnfcrel',
+    androidPackage: null,
     iosUrl: null,
+    route: '/notes',
   },
   { 
     name: t('music'), 
@@ -63,6 +68,7 @@ const getEssentialApps = (t: (key: any) => string) => [
     color: '#E91E63',
     androidPackage: 'com.google.android.music',
     iosUrl: 'music://',
+    route: null,
   },
   {
     name: t('camera'),
@@ -70,6 +76,7 @@ const getEssentialApps = (t: (key: any) => string) => [
     color: '#00BCD4',
     androidPackage: 'com.android.camera2',
     iosUrl: null,
+    route: null,
   },
   { 
     name: t('calculator'), 
@@ -77,6 +84,7 @@ const getEssentialApps = (t: (key: any) => string) => [
     color: '#607D8B',
     androidPackage: 'com.android.calculator2',
     iosUrl: null,
+    route: null,
   },
 ];
 
