@@ -162,17 +162,24 @@ export default function NotesScreen() {
               <TouchableOpacity
                 style={styles.deleteButton}
                 onPress={() => {
-                  console.log('[Notes] Delete button pressed for:', item.id);
+                  console.log('===================');
+                  console.log('TRASH ICON PRESSED!');
+                  console.log('Note ID:', item.id);
+                  console.log('===================');
                   handleDeleteNote(item.id);
                 }}
-                onStartShouldSetResponder={() => true}
-                onResponderRelease={() => {
-                  console.log('[Notes] Delete button released');
+                onPressIn={() => console.log('[DELETE BUTTON] onPressIn triggered')}
+                onPressOut={() => console.log('[DELETE BUTTON] onPressOut triggered')}
+                onStartShouldSetResponder={() => {
+                  console.log('[DELETE BUTTON] onStartShouldSetResponder called');
+                  return true;
                 }}
+                onResponderGrant={() => console.log('[DELETE BUTTON] onResponderGrant called')}
+                onResponderRelease={() => console.log('[DELETE BUTTON] onResponderRelease called')}
                 activeOpacity={0.7}
-                hitSlop={{ top: 10, bottom: 10, left: 10, right: 10 }}
+                hitSlop={{ top: 20, bottom: 20, left: 20, right: 20 }}
               >
-                <Ionicons name="trash-outline" size={20} color={COLORS.textSecondary} />
+                <Ionicons name="trash-outline" size={24} color="#FF5555" />
               </TouchableOpacity>
             </View>
           )}
