@@ -156,9 +156,13 @@ export default function NotesScreen() {
               {/* Delete button - separate from card touchable */}
               <TouchableOpacity
                 style={styles.deleteButton}
-                onPress={(e) => {
-                  e.stopPropagation();
+                onPress={() => {
+                  console.log('[Notes] Delete button pressed for:', item.id);
                   handleDeleteNote(item.id);
+                }}
+                onStartShouldSetResponder={() => true}
+                onResponderRelease={() => {
+                  console.log('[Notes] Delete button released');
                 }}
                 activeOpacity={0.7}
                 hitSlop={{ top: 10, bottom: 10, left: 10, right: 10 }}
