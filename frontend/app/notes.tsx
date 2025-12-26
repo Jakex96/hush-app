@@ -286,7 +286,13 @@ const styles = StyleSheet.create({
     borderRadius: 8,
   },
   deleteButton: {
-    padding: SPACING.xs,
+    position: 'absolute',
+    top: SPACING.md,
+    right: SPACING.md,
+    padding: SPACING.sm,
+    backgroundColor: COLORS.surface,
+    borderRadius: 20,
+    zIndex: 10,
   },
   fab: {
     position: 'absolute',
