@@ -27,16 +27,31 @@ export default function NotesScreen() {
     loadNotes();
   }, []);
 
-  const handleDeleteNote = (id: string) => {
+  const handleDeleteNote = (id: string, event?: any) => {
+    // Prevent event from bubbling to parent TouchableOpacity
+    if (event) {
+      event.stopPropagation?.();
+    }
+    
+    console.log('[Notes] DELETE button tapped for note:', id);
+    
     Alert.alert(
       t('deleteNote'),
       t('deleteNoteConfirm'),
       [
-        { text: t('cancel'), style: 'cancel' },
+        { 
+          text: t('cancel'), 
+          style: 'cancel',
+          onPress: () => console.log('[Notes] Delete cancelled')
+        },
         {
           text: t('delete'),
           style: 'destructive',
-          onPress: () => deleteNote(id),
+          onPress: () => {
+            console.log('[Notes] Deleting note:', id);
+            deleteNote(id);
+            console.log('[Notes] Note deleted successfully');
+          },
         },
       ]
     );
