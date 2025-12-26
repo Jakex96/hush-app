@@ -70,25 +70,26 @@ export const useNotesStore = create<NotesState>((set, get) => ({
     }
   },
 
-  deleteNote: async (id) => {
+  deleteNote: async (id: string) => {
     try {
+      console.log('[NotesStore] DELETE START - ID:', id);
       const currentNotes = get().notes;
-      console.log('[NotesStore] DELETE - Before:', currentNotes.length, 'notes');
-      console.log('[NotesStore] DELETE - Removing ID:', id);
+      console.log('[NotesStore] DELETE - Current notes count:', currentNotes.length);
       
+      // Filter out the note with matching ID
       const updatedNotes = currentNotes.filter((note) => note.id !== id);
+      console.log('[NotesStore] DELETE - After filter:', updatedNotes.length);
       
-      console.log('[NotesStore] DELETE - After:', updatedNotes.length, 'notes');
-      
-      // CRITICAL: Update state FIRST (triggers re-render)
+      // Update state FIRST (triggers immediate re-render)
       set({ notes: updatedNotes });
+      console.log('[NotesStore] DELETE - State updated');
       
       // THEN persist to storage
       await AsyncStorage.setItem(NOTES_STORAGE_KEY, JSON.stringify(updatedNotes));
-      
-      console.log('[NotesStore] DELETE - State updated and persisted');
+      console.log('[NotesStore] DELETE - Persisted to storage');
     } catch (error) {
-      console.error('[NotesStore] DELETE - Error:', error);
+      console.error('[NotesStore] DELETE ERROR:', error);
+      throw error;
     }
   },
 

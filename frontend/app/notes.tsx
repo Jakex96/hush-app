@@ -35,7 +35,11 @@ export default function NotesScreen() {
         {
           text: t('delete'),
           style: 'destructive',
-          onPress: () => deleteNote(id),
+          onPress: async () => {
+            console.log('[NotesScreen] Deleting note:', id);
+            await deleteNote(id);
+            console.log('[NotesScreen] Delete complete');
+          },
         },
       ]
     );
