@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect } from 'react';
 import {
   View,
   Text,
@@ -22,36 +22,20 @@ export default function NotesScreen() {
 
   const t = (key: Parameters<typeof getTranslation>[1]) => getTranslation(language, key);
 
-  console.log('[NotesScreen] Component rendered. Notes count:', notes.length);
-
   useEffect(() => {
-    console.log('[NotesScreen] Loading notes...');
     loadNotes();
   }, []);
 
   const handleDeleteNote = (id: string) => {
-    console.log('=== DELETE FLOW START ===');
-    console.log('[NotesScreen] handleDeleteNote called with ID:', id);
-    console.log('[NotesScreen] Current notes count:', notes.length);
-    
     Alert.alert(
       t('deleteNote'),
       t('deleteNoteConfirm'),
       [
-        { 
-          text: t('cancel'), 
-          style: 'cancel',
-          onPress: () => console.log('[NotesScreen] Delete CANCELLED by user')
-        },
+        { text: t('cancel'), style: 'cancel' },
         {
           text: t('delete'),
           style: 'destructive',
-          onPress: () => {
-            console.log('[NotesScreen] Delete CONFIRMED by user for ID:', id);
-            console.log('[NotesScreen] Calling deleteNote() from store...');
-            deleteNote(id);
-            console.log('[NotesScreen] deleteNote() call completed');
-          },
+          onPress: () => deleteNote(id),
         },
       ]
     );
@@ -119,9 +103,9 @@ export default function NotesScreen() {
           keyExtractor={(item) => item.id}
           contentContainerStyle={styles.listContent}
           renderItem={({ item }) => (
-            <View style={styles.noteCard}>
+            <View style={styles.noteCardContainer}>
               <TouchableOpacity
-                style={styles.noteCardTouchable}
+                style={styles.noteCard}
                 onPress={() => router.push(`/note-editor?id=${item.id}`)}
                 activeOpacity={0.7}
               >
@@ -158,29 +142,17 @@ export default function NotesScreen() {
                 )}
               </TouchableOpacity>
 
-              {/* Delete button - separate from card touchable */}
-              <TouchableOpacity
-                style={styles.deleteButton}
-                onPress={() => {
-                  console.log('===================');
-                  console.log('TRASH ICON PRESSED!');
-                  console.log('Note ID:', item.id);
-                  console.log('===================');
-                  handleDeleteNote(item.id);
-                }}
-                onPressIn={() => console.log('[DELETE BUTTON] onPressIn triggered')}
-                onPressOut={() => console.log('[DELETE BUTTON] onPressOut triggered')}
-                onStartShouldSetResponder={() => {
-                  console.log('[DELETE BUTTON] onStartShouldSetResponder called');
-                  return true;
-                }}
-                onResponderGrant={() => console.log('[DELETE BUTTON] onResponderGrant called')}
-                onResponderRelease={() => console.log('[DELETE BUTTON] onResponderRelease called')}
-                activeOpacity={0.7}
-                hitSlop={{ top: 20, bottom: 20, left: 20, right: 20 }}
-              >
-                <Ionicons name="trash-outline" size={24} color="#FF5555" />
-              </TouchableOpacity>
+              {/* Delete button - absolutely positioned, outside TouchableOpacity */}
+              <View style={styles.deleteButtonContainer}>
+                <TouchableOpacity
+                  style={styles.deleteButton}
+                  onPress={() => handleDeleteNote(item.id)}
+                  hitSlop={{ top: 15, bottom: 15, left: 15, right: 15 }}
+                  activeOpacity={0.6}
+                >
+                  <Ionicons name="trash-outline" size={22} color={COLORS.textSecondary} />
+                </TouchableOpacity>
+              </View>
             </View>
           )}
         />
@@ -240,17 +212,16 @@ const styles = StyleSheet.create({
     padding: SPACING.lg,
     paddingBottom: 100,
   },
-  noteCard: {
-    backgroundColor: COLORS.surface,
-    borderRadius: 12,
+  noteCardContainer: {
     marginBottom: SPACING.md,
     position: 'relative',
   },
-  noteCardTouchable: {
-    flexDirection: 'row',
+  noteCard: {
+    backgroundColor: COLORS.surface,
+    borderRadius: 12,
     padding: SPACING.md,
+    flexDirection: 'row',
     gap: SPACING.md,
-    flex: 1,
   },
   noteContent: {
     flex: 1,
@@ -296,14 +267,16 @@ const styles = StyleSheet.create({
     height: 60,
     borderRadius: 8,
   },
-  deleteButton: {
+  deleteButtonContainer: {
     position: 'absolute',
-    top: SPACING.md,
-    right: SPACING.md,
-    padding: SPACING.sm,
-    backgroundColor: COLORS.surface,
-    borderRadius: 20,
+    top: SPACING.sm,
+    right: SPACING.sm,
     zIndex: 10,
+  },
+  deleteButton: {
+    padding: SPACING.sm,
+    backgroundColor: COLORS.background,
+    borderRadius: 20,
   },
   fab: {
     position: 'absolute',
