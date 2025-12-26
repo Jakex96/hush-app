@@ -19,16 +19,20 @@ export default function NotesScreen() {
   const router = useRouter();
   const { notes, loadNotes, deleteNote } = useNotesStore();
   const { language } = useHushStore();
-  const [selectedNote, setSelectedNote] = useState<string | null>(null);
 
   const t = (key: Parameters<typeof getTranslation>[1]) => getTranslation(language, key);
 
+  console.log('[NotesScreen] Component rendered. Notes count:', notes.length);
+
   useEffect(() => {
+    console.log('[NotesScreen] Loading notes...');
     loadNotes();
   }, []);
 
   const handleDeleteNote = (id: string) => {
-    console.log('[Notes] DELETE button tapped for note:', id);
+    console.log('=== DELETE FLOW START ===');
+    console.log('[NotesScreen] handleDeleteNote called with ID:', id);
+    console.log('[NotesScreen] Current notes count:', notes.length);
     
     Alert.alert(
       t('deleteNote'),
@@ -37,15 +41,16 @@ export default function NotesScreen() {
         { 
           text: t('cancel'), 
           style: 'cancel',
-          onPress: () => console.log('[Notes] Delete cancelled')
+          onPress: () => console.log('[NotesScreen] Delete CANCELLED by user')
         },
         {
           text: t('delete'),
           style: 'destructive',
           onPress: () => {
-            console.log('[Notes] Deleting note:', id);
+            console.log('[NotesScreen] Delete CONFIRMED by user for ID:', id);
+            console.log('[NotesScreen] Calling deleteNote() from store...');
             deleteNote(id);
-            console.log('[Notes] Note deleted successfully');
+            console.log('[NotesScreen] deleteNote() call completed');
           },
         },
       ]
