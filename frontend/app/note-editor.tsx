@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useRef } from 'react';
 import {
   View,
   Text,
@@ -28,37 +28,85 @@ export default function NoteEditor() {
   const [body, setBody] = useState('');
   const [photoUri, setPhotoUri] = useState<string | undefined>();
   const [selectedTags, setSelectedTags] = useState<NoteTag[]>([]);
-  const [hasChanges, setHasChanges] = useState(false);
+  const [hasUnsavedChanges, setHasUnsavedChanges] = useState(false);
+  
+  // Refs to prevent duplicate saves
+  const isSavingRef = useRef(false);
+  const hasInitialLoadedRef = useRef(false);
+  const lastSavedContentRef = useRef('');
 
   const t = (key: Parameters<typeof getTranslation>[1]) => getTranslation(language, key);
 
   const isEditMode = !!params.id;
 
+  // Load existing note (edit mode)
   useEffect(() => {
-    if (isEditMode && params.id) {
+    if (isEditMode && params.id && !hasInitialLoadedRef.current) {
       const note = getNote(params.id);
       if (note) {
+        console.log('[NoteEditor] Loading existing note:', params.id);
         setTitle(note.title || '');
         setBody(note.body);
         setPhotoUri(note.photoUri);
         setSelectedTags(note.tags || []);
+        lastSavedContentRef.current = note.body;
+        hasInitialLoadedRef.current = true;
       }
     }
-  }, [params.id]);
+  }, [params.id, isEditMode]);
 
-  // Auto-save when changes are made
+  // Auto-save logic (debounced)
   useEffect(() => {
-    if (hasChanges && body.trim()) {
-      const timer = setTimeout(() => {
-        handleSave();
-      }, 1000); // Auto-save after 1 second of inactivity
-
-      return () => clearTimeout(timer);
+    // Skip if:
+    // - No body content
+    // - Currently saving
+    // - Content hasn't changed from last save
+    // - Initial load not complete (prevents double save in StrictMode)
+    if (
+      !body.trim() ||
+      isSavingRef.current ||
+      body === lastSavedContentRef.current ||
+      (!isEditMode && !hasInitialLoadedRef.current)
+    ) {
+      return;
     }
-  }, [title, body, photoUri, selectedTags, hasChanges]);
+
+    // Mark that we have unsaved changes
+    if (!hasUnsavedChanges) {
+      setHasUnsavedChanges(true);
+    }
+
+    // Debounce save by 1.5 seconds
+    const timer = setTimeout(() => {
+      if (body.trim() && body !== lastSavedContentRef.current) {
+        console.log('[NoteEditor] Auto-saving after inactivity');
+        handleSave();
+      }
+    }, 1500);
+
+    return () => clearTimeout(timer);
+  }, [title, body, photoUri, selectedTags]);
 
   const handleSave = async () => {
-    if (!body.trim()) return;
+    // Guard against duplicate saves
+    if (isSavingRef.current) {
+      console.log('[NoteEditor] Save already in progress, skipping');
+      return;
+    }
+
+    if (!body.trim()) {
+      console.log('[NoteEditor] No content to save');
+      return;
+    }
+
+    // Check if content actually changed
+    if (body === lastSavedContentRef.current && isEditMode) {
+      console.log('[NoteEditor] Content unchanged, skipping save');
+      return;
+    }
+
+    isSavingRef.current = true;
+    console.log('[NoteEditor] Saving note...', { isEditMode, id: params.id });
 
     try {
       if (isEditMode && params.id) {
@@ -68,6 +116,7 @@ export default function NoteEditor() {
           photoUri,
           tags: selectedTags,
         });
+        console.log('[NoteEditor] Note updated successfully');
       } else {
         await addNote({
           title: title.trim() || undefined,
@@ -75,17 +124,27 @@ export default function NoteEditor() {
           photoUri,
           tags: selectedTags,
         });
+        console.log('[NoteEditor] New note created successfully');
       }
-      setHasChanges(false);
+      
+      lastSavedContentRef.current = body;
+      setHasUnsavedChanges(false);
     } catch (error) {
-      console.error('Error saving note:', error);
+      console.error('[NoteEditor] Error saving note:', error);
+    } finally {
+      isSavingRef.current = false;
     }
   };
 
-  const handleClose = () => {
-    if (body.trim()) {
-      handleSave();
+  const handleClose = async () => {
+    console.log('[NoteEditor] Closing editor');
+    
+    // Only save if there's content and unsaved changes
+    if (body.trim() && hasUnsavedChanges) {
+      console.log('[NoteEditor] Saving before close');
+      await handleSave();
     }
+    
     router.back();
   };
 
@@ -114,11 +173,11 @@ export default function NoteEditor() {
         const base64 = result.assets[0].base64;
         if (base64) {
           setPhotoUri(`data:image/jpeg;base64,${base64}`);
-          setHasChanges(true);
+          setHasUnsavedChanges(true);
         }
       }
     } catch (error) {
-      console.error('Error taking photo:', error);
+      console.error('[NoteEditor] Error taking photo:', error);
     }
   };
 
@@ -126,7 +185,7 @@ export default function NoteEditor() {
     setSelectedTags((prev) =>
       prev.includes(tag) ? prev.filter((t) => t !== tag) : [...prev, tag]
     );
-    setHasChanges(true);
+    setHasUnsavedChanges(true);
   };
 
   const tags: { id: NoteTag; label: string; icon: string; color: string }[] = [
@@ -165,7 +224,7 @@ export default function NoteEditor() {
           value={title}
           onChangeText={(text) => {
             setTitle(text);
-            setHasChanges(true);
+            setHasUnsavedChanges(true);
           }}
           maxLength={100}
         />
@@ -178,7 +237,12 @@ export default function NoteEditor() {
           value={body}
           onChangeText={(text) => {
             setBody(text);
-            setHasChanges(true);
+            setHasUnsavedChanges(true);
+            
+            // Mark as loaded after first user input (prevents StrictMode duplicate)
+            if (!hasInitialLoadedRef.current) {
+              hasInitialLoadedRef.current = true;
+            }
           }}
           multiline
           textAlignVertical="top"
@@ -192,7 +256,7 @@ export default function NoteEditor() {
               style={styles.removePhoto}
               onPress={() => {
                 setPhotoUri(undefined);
-                setHasChanges(true);
+                setHasUnsavedChanges(true);
               }}
               activeOpacity={0.7}
             >
@@ -248,7 +312,7 @@ export default function NoteEditor() {
         )}
 
         {/* Auto-save indicator */}
-        {body.trim() && (
+        {body.trim() && !hasUnsavedChanges && (
           <Text style={styles.autoSaveText}>{t('autoSaved')}</Text>
         )}
       </ScrollView>
@@ -361,7 +425,7 @@ const styles = StyleSheet.create({
   },
   autoSaveText: {
     fontSize: 12,
-    color: COLORS.textTertiary,
+    color: COLORS.success,
     textAlign: 'center',
   },
 });
