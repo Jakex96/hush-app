@@ -46,33 +46,39 @@ export const useNotesStore = create<NotesState>((set, get) => ({
         timestamp: Date.now(),
       };
 
+      console.log('[NotesStore] Adding new note:', newNote.id);
       const updatedNotes = [newNote, ...get().notes];
       set({ notes: updatedNotes });
       await AsyncStorage.setItem(NOTES_STORAGE_KEY, JSON.stringify(updatedNotes));
+      console.log('[NotesStore] Note added and persisted. Total notes:', updatedNotes.length);
     } catch (error) {
-      console.error('Error adding note:', error);
+      console.error('[NotesStore] Error adding note:', error);
     }
   },
 
   updateNote: async (id, updates) => {
     try {
+      console.log('[NotesStore] Updating note:', id);
       const updatedNotes = get().notes.map((note) =>
         note.id === id ? { ...note, ...updates } : note
       );
       set({ notes: updatedNotes });
       await AsyncStorage.setItem(NOTES_STORAGE_KEY, JSON.stringify(updatedNotes));
+      console.log('[NotesStore] Note updated and persisted');
     } catch (error) {
-      console.error('Error updating note:', error);
+      console.error('[NotesStore] Error updating note:', error);
     }
   },
 
   deleteNote: async (id) => {
     try {
+      console.log('[NotesStore] Deleting note:', id);
       const updatedNotes = get().notes.filter((note) => note.id !== id);
       set({ notes: updatedNotes });
       await AsyncStorage.setItem(NOTES_STORAGE_KEY, JSON.stringify(updatedNotes));
+      console.log('[NotesStore] Note deleted. Remaining notes:', updatedNotes.length);
     } catch (error) {
-      console.error('Error deleting note:', error);
+      console.error('[NotesStore] Error deleting note:', error);
     }
   },
 
