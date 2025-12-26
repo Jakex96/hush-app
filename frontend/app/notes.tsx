@@ -146,17 +146,15 @@ export default function NotesScreen() {
                 )}
               </TouchableOpacity>
 
-              {/* Delete button - absolutely positioned, outside TouchableOpacity */}
-              <View style={styles.deleteButtonContainer}>
-                <TouchableOpacity
-                  style={styles.deleteButton}
-                  onPress={() => handleDeleteNote(item.id)}
-                  hitSlop={{ top: 15, bottom: 15, left: 15, right: 15 }}
-                  activeOpacity={0.6}
-                >
-                  <Ionicons name="trash-outline" size={22} color={COLORS.textSecondary} />
-                </TouchableOpacity>
-              </View>
+              {/* Delete button - positioned to avoid overlap */}
+              <TouchableOpacity
+                style={styles.deleteButton}
+                onPress={() => handleDeleteNote(item.id)}
+                hitSlop={{ top: 15, bottom: 15, left: 15, right: 15 }}
+                activeOpacity={0.6}
+              >
+                <Ionicons name="trash-outline" size={22} color={COLORS.textSecondary} />
+              </TouchableOpacity>
             </View>
           )}
         />
@@ -218,9 +216,12 @@ const styles = StyleSheet.create({
   },
   noteCardContainer: {
     marginBottom: SPACING.md,
-    position: 'relative',
+    flexDirection: 'row',
+    alignItems: 'flex-start',
+    gap: SPACING.xs,
   },
   noteCard: {
+    flex: 1,
     backgroundColor: COLORS.surface,
     borderRadius: 12,
     padding: SPACING.md,
@@ -271,16 +272,12 @@ const styles = StyleSheet.create({
     height: 60,
     borderRadius: 8,
   },
-  deleteButtonContainer: {
-    position: 'absolute',
-    top: SPACING.sm,
-    right: SPACING.sm,
-    zIndex: 10,
-  },
   deleteButton: {
     padding: SPACING.sm,
-    backgroundColor: COLORS.background,
+    backgroundColor: COLORS.surface,
     borderRadius: 20,
+    alignSelf: 'flex-start',
+    marginTop: SPACING.xs,
   },
   fab: {
     position: 'absolute',
