@@ -232,10 +232,14 @@ const styles = StyleSheet.create({
   noteCard: {
     backgroundColor: COLORS.surface,
     borderRadius: 12,
-    padding: SPACING.md,
     marginBottom: SPACING.md,
+    position: 'relative',
+  },
+  noteCardTouchable: {
     flexDirection: 'row',
+    padding: SPACING.md,
     gap: SPACING.md,
+    flex: 1,
   },
   noteContent: {
     flex: 1,
