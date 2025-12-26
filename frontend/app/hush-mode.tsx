@@ -199,6 +199,12 @@ export default function HushMode() {
   // Function to launch essential apps
   const launchApp = async (app: typeof ESSENTIAL_APPS[0]) => {
     try {
+      // If app has an in-app route, navigate there
+      if (app.route) {
+        router.push(app.route);
+        return;
+      }
+
       if (Platform.OS === 'android') {
         // Try to open Android app via package name
         const url = `intent://#Intent;package=${app.androidPackage};end`;
