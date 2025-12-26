@@ -27,12 +27,7 @@ export default function NotesScreen() {
     loadNotes();
   }, []);
 
-  const handleDeleteNote = (id: string, event?: any) => {
-    // Prevent event from bubbling to parent TouchableOpacity
-    if (event) {
-      event.stopPropagation?.();
-    }
-    
+  const handleDeleteNote = (id: string) => {
     console.log('[Notes] DELETE button tapped for note:', id);
     
     Alert.alert(
