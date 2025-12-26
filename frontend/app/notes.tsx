@@ -119,51 +119,58 @@ export default function NotesScreen() {
           keyExtractor={(item) => item.id}
           contentContainerStyle={styles.listContent}
           renderItem={({ item }) => (
-            <TouchableOpacity
-              style={styles.noteCard}
-              onPress={() => router.push(`/note-editor?id=${item.id}`)}
-              activeOpacity={0.7}
-            >
-              <View style={styles.noteContent}>
-                {item.title && <Text style={styles.noteTitle}>{item.title}</Text>}
-                <Text style={styles.noteBody} numberOfLines={3}>
-                  {item.body}
-                </Text>
-                
-                {/* Tags */}
-                {item.tags && item.tags.length > 0 && (
-                  <View style={styles.tagsContainer}>
-                    {item.tags.map((tag) => (
-                      <View
-                        key={tag}
-                        style={[styles.tag, { backgroundColor: getTagColor(tag) }]}
-                      >
-                        <Text style={styles.tagText}>{getTagLabel(tag)}</Text>
-                      </View>
-                    ))}
-                  </View>
-                )}
-
-                <View style={styles.noteFooter}>
-                  <Text style={styles.noteTime}>{formatTime(item.timestamp)}</Text>
-                  {item.photoUri && (
-                    <Ionicons name="image" size={16} color={COLORS.textSecondary} />
+            <View style={styles.noteCard}>
+              <TouchableOpacity
+                style={styles.noteCardTouchable}
+                onPress={() => router.push(`/note-editor?id=${item.id}`)}
+                activeOpacity={0.7}
+              >
+                <View style={styles.noteContent}>
+                  {item.title && <Text style={styles.noteTitle}>{item.title}</Text>}
+                  <Text style={styles.noteBody} numberOfLines={3}>
+                    {item.body}
+                  </Text>
+                  
+                  {/* Tags */}
+                  {item.tags && item.tags.length > 0 && (
+                    <View style={styles.tagsContainer}>
+                      {item.tags.map((tag) => (
+                        <View
+                          key={tag}
+                          style={[styles.tag, { backgroundColor: getTagColor(tag) }]}
+                        >
+                          <Text style={styles.tagText}>{getTagLabel(tag)}</Text>
+                        </View>
+                      ))}
+                    </View>
                   )}
+
+                  <View style={styles.noteFooter}>
+                    <Text style={styles.noteTime}>{formatTime(item.timestamp)}</Text>
+                    {item.photoUri && (
+                      <Ionicons name="image" size={16} color={COLORS.textSecondary} />
+                    )}
+                  </View>
                 </View>
-              </View>
 
-              {item.photoUri && (
-                <Image source={{ uri: item.photoUri }} style={styles.noteImage} />
-              )}
+                {item.photoUri && (
+                  <Image source={{ uri: item.photoUri }} style={styles.noteImage} />
+                )}
+              </TouchableOpacity>
 
+              {/* Delete button - separate from card touchable */}
               <TouchableOpacity
                 style={styles.deleteButton}
-                onPress={() => handleDeleteNote(item.id)}
+                onPress={(e) => {
+                  e.stopPropagation();
+                  handleDeleteNote(item.id);
+                }}
                 activeOpacity={0.7}
+                hitSlop={{ top: 10, bottom: 10, left: 10, right: 10 }}
               >
                 <Ionicons name="trash-outline" size={20} color={COLORS.textSecondary} />
               </TouchableOpacity>
-            </TouchableOpacity>
+            </View>
           )}
         />
       )}
