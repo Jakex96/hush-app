@@ -7,6 +7,8 @@ import {
   FlatList,
   Alert,
   Image,
+  Platform,
+  Pressable,
 } from 'react-native';
 import { useRouter } from 'expo-router';
 import { Ionicons } from '@expo/vector-icons';
@@ -27,23 +29,58 @@ export default function NotesScreen() {
   }, []);
 
   const handleDeleteNote = (id: string) => {
-    console.log('[NotesScreen] ⚠️ DELETE BUTTON PRESSED - ID:', id);
-    Alert.alert(
-      t('deleteNote'),
-      t('deleteNoteConfirm'),
-      [
-        { text: t('cancel'), style: 'cancel' },
-        {
-          text: t('delete'),
-          style: 'destructive',
-          onPress: async () => {
-            console.log('[NotesScreen] ✓ User confirmed delete - ID:', id);
-            await deleteNote(id);
-            console.log('[NotesScreen] ✓ Delete complete');
+    if (__DEV__) {
+      console.log('[Notes] trash tapped', id);
+    }
+
+    // Cross-platform confirmation
+    if (Platform.OS === 'web') {
+      const confirmed = window.confirm('Delete this note? This cannot be undone.');
+      if (confirmed) {
+        performDelete(id);
+      }
+    } else {
+      Alert.alert(
+        t('deleteNote'),
+        t('deleteNoteConfirm'),
+        [
+          { text: t('cancel'), style: 'cancel' },
+          {
+            text: t('delete'),
+            style: 'destructive',
+            onPress: () => performDelete(id),
           },
-        },
-      ]
-    );
+        ]
+      );
+    }
+  };
+
+  const performDelete = async (id: string) => {
+    if (__DEV__) {
+      console.log('[Notes] confirmed delete', id);
+    }
+    try {
+      await deleteNote(id);
+      const remainingNotes = notes.filter(n => n.id !== id);
+      if (__DEV__) {
+        console.log('[Notes] deleted; new count:', remainingNotes.length);
+      }
+    } catch (error) {
+      console.error('[Notes] Delete failed:', error);
+      if (Platform.OS === 'web') {
+        alert('Failed to delete note');
+      } else {
+        Alert.alert('Error', 'Failed to delete note');
+      }
+    }
+  };
+
+  // Long-press fallback for delete
+  const handleLongPress = (id: string) => {
+    if (__DEV__) {
+      console.log('[Notes] long press detected on note', id);
+    }
+    handleDeleteNote(id);
   };
 
   const formatTime = (timestamp: number) => {
@@ -108,13 +145,14 @@ export default function NotesScreen() {
           keyExtractor={(item) => item.id}
           contentContainerStyle={styles.listContent}
           renderItem={({ item }) => (
-            <View style={styles.noteCardContainer}>
-              <TouchableOpacity
+            <View style={styles.noteCardContainer} pointerEvents="box-none">
+              <Pressable
                 style={styles.noteCard}
                 onPress={() => router.push(`/note-editor?id=${item.id}`)}
-                activeOpacity={0.7}
+                onLongPress={() => handleLongPress(item.id)}
+                delayLongPress={800}
               >
-                <View style={styles.noteContent}>
+                <View style={styles.noteContent} pointerEvents="none">
                   {item.title && <Text style={styles.noteTitle}>{item.title}</Text>}
                   <Text style={styles.noteBody} numberOfLines={3}>
                     {item.body}
@@ -149,23 +187,37 @@ export default function NotesScreen() {
                     pointerEvents="none"
                   />
                 )}
-              </TouchableOpacity>
+              </Pressable>
 
-              {/* Delete button - MUST be touchable, elevated above all content */}
-              <TouchableOpacity
+              {/* Delete button - Absolutely positioned, elevated, clickable */}
+              <Pressable
                 style={styles.deleteButton}
-                onPress={() => {
-                  console.log('[NotesScreen] 🔥 TRASH ICON TAPPED - Item ID:', item.id);
+                onPress={(e) => {
+                  // Stop propagation on web
+                  if (Platform.OS === 'web' && e?.nativeEvent) {
+                    e.nativeEvent.stopPropagation?.();
+                  }
+                  if (__DEV__) {
+                    console.log('[Notes] 🔥 TRASH PRESSED - ID:', item.id);
+                  }
                   handleDeleteNote(item.id);
                 }}
                 hitSlop={{ top: 20, bottom: 20, left: 20, right: 20 }}
-                activeOpacity={0.6}
-                accessible={true}
-                accessibilityLabel="Delete note"
-                accessibilityRole="button"
+                android_ripple={{ color: 'rgba(255,255,255,0.2)', radius: 20 }}
               >
-                <Ionicons name="trash-outline" size={22} color={COLORS.textSecondary} />
-              </TouchableOpacity>
+                {({ pressed }) => (
+                  <View style={[
+                    styles.deleteButtonInner,
+                    pressed && styles.deleteButtonPressed
+                  ]}>
+                    <Ionicons 
+                      name="trash-outline" 
+                      size={22} 
+                      color={pressed ? '#FF6B6B' : COLORS.textSecondary} 
+                    />
+                  </View>
+                )}
+              </Pressable>
             </View>
           )}
         />
@@ -233,7 +285,7 @@ const styles = StyleSheet.create({
     backgroundColor: COLORS.surface,
     borderRadius: 12,
     padding: SPACING.md,
-    paddingRight: 56, // Make room for delete button
+    paddingRight: 60, // Space for delete button
     flexDirection: 'row',
     gap: SPACING.md,
   },
@@ -283,17 +335,21 @@ const styles = StyleSheet.create({
   },
   deleteButton: {
     position: 'absolute',
-    top: SPACING.sm,
-    right: SPACING.sm,
-    padding: SPACING.sm,
+    top: 8,
+    right: 8,
+    zIndex: 1000,
+    elevation: 10,
+  },
+  deleteButtonInner: {
+    padding: 10,
     backgroundColor: COLORS.surface,
     borderRadius: 20,
-    zIndex: 999,
-    elevation: 10,
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.25,
-    shadowRadius: 3.84,
+    borderWidth: 1,
+    borderColor: 'rgba(255,255,255,0.1)',
+  },
+  deleteButtonPressed: {
+    backgroundColor: 'rgba(255,107,107,0.2)',
+    transform: [{ scale: 0.95 }],
   },
   fab: {
     position: 'absolute',
