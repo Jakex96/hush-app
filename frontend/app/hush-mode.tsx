@@ -12,10 +12,12 @@ import {
   Linking,
   Platform,
   Modal,
+  Pressable,
 } from 'react-native';
 import { useRouter } from 'expo-router';
 import { Ionicons } from '@expo/vector-icons';
 import { useHushStore } from '../store/hushStore';
+import { useSettingsStore, bankDeepLinks, bankOptions } from '../store/settingsStore';
 import { getTranslation } from '../constants/translations';
 import { COLORS, SPACING, TYPOGRAPHY } from '../constants/theme';
 
@@ -91,11 +93,13 @@ const getEssentialApps = (t: (key: any) => string) => [
 export default function HushMode() {
   const router = useRouter();
   const { isHushActive, endTime, deactivateHush, duration, language, setLanguage } = useHushStore();
+  const { allowExternalApps, selectedBank, loadSettings } = useSettingsStore();
   const [timeRemaining, setTimeRemaining] = useState('');
   const [softTimeText, setSoftTimeText] = useState('');
   const [progress, setProgress] = useState(0);
   const [showExactTime, setShowExactTime] = useState(false);
   const [showSettings, setShowSettings] = useState(false);
+  const [showBankModal, setShowBankModal] = useState(false);
 
   const t = (key: Parameters<typeof getTranslation>[1]) => getTranslation(language, key);
   const ESSENTIAL_APPS = getEssentialApps(t);
