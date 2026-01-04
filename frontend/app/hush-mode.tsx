@@ -200,6 +200,75 @@ export default function HushMode() {
     return () => clearInterval(interval);
   }, [isHushActive, endTime]);
 
+  useEffect(() => {
+    // Load settings on mount
+    loadSettings();
+  }, []);
+
+  // Handle opening settings
+  const handleOpenSettings = () => {
+    router.push('/settings');
+  };
+
+  // Handle bank button press
+  const handleBankPress = () => {
+    console.log('[HushMode] Bank button pressed');
+    console.log('[HushMode] Selected bank:', selectedBank);
+    
+    if (selectedBank === 'none') {
+      Alert.alert(
+        'Choose your bank app',
+        'Please select your bank app in Settings first.',
+        [
+          { text: 'Cancel', style: 'cancel' },
+          { text: 'Go to Settings', onPress: () => router.push('/settings') }
+        ]
+      );
+      return;
+    }
+    
+    setShowBankModal(true);
+  };
+
+  // Handle confirmed bank opening
+  const handleOpenBank = async () => {
+    setShowBankModal(false);
+    
+    try {
+      const deepLink = bankDeepLinks[selectedBank];
+      const bankName = bankOptions.find(b => b.value === selectedBank)?.label || 'Bank';
+      
+      console.log('[HushMode] Attempting to open bank:', bankName, deepLink);
+      
+      // Try to open the deep link
+      const canOpen = await Linking.canOpenURL(deepLink);
+      if (canOpen) {
+        await Linking.openURL(deepLink);
+        console.log('[HushMode] Bank app opened successfully');
+      } else {
+        // Fallback: Open store search
+        console.log('[HushMode] Cannot open deep link, trying store fallback');
+        const storeUrl = Platform.OS === 'ios'
+          ? `https://apps.apple.com/search?term=${encodeURIComponent(bankName)}`
+          : `https://play.google.com/store/search?q=${encodeURIComponent(bankName)}&c=apps`;
+        
+        const canOpenStore = await Linking.canOpenURL(storeUrl);
+        if (canOpenStore) {
+          await Linking.openURL(storeUrl);
+        } else {
+          throw new Error('Cannot open store');
+        }
+      }
+    } catch (error) {
+      console.error('[HushMode] Error opening bank:', error);
+      const bankName = bankOptions.find(b => b.value === selectedBank)?.label || 'bank';
+      Alert.alert(
+        'App not found',
+        `Install your ${bankName} app from Google Play / App Store.`
+      );
+    }
+  };
+
   // Function to launch essential apps
   const launchApp = async (app: typeof ESSENTIAL_APPS[0]) => {
     try {
