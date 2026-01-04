@@ -243,28 +243,38 @@ export default function HushMode() {
     
     try {
       if (Platform.OS === 'web') {
-        // WEB PREVIEW: Cannot use Linking reliably, use window methods
-        console.log('[HushMode] Web platform detected - using window.open for store');
+        // WEB PREVIEW: Show alert with copy link option
+        console.log('[HushMode] Web platform detected - showing info alert');
         
         const searchTerm = encodeURIComponent(bankName);
         const storeUrl = `https://play.google.com/store/search?q=${searchTerm}&c=apps`;
         
         Alert.alert(
-          'Opening store',
-          'External apps aren\'t supported inside web preview. Opening store page in a new tab…',
-          [{ text: 'OK' }]
+          'Preview Mode',
+          'Store links are blocked in this preview. On a real phone, this opens your bank app or the store.',
+          [
+            { text: 'OK', style: 'cancel' },
+            {
+              text: 'Copy link',
+              onPress: () => {
+                // For web, we can use navigator.clipboard API
+                if (navigator.clipboard) {
+                  navigator.clipboard.writeText(storeUrl).then(() => {
+                    console.log('[HushMode] Store URL copied to clipboard:', storeUrl);
+                    Alert.alert('Copied', 'Store link copied to clipboard!');
+                  }).catch((err) => {
+                    console.error('[HushMode] Failed to copy:', err);
+                    Alert.alert('Link', storeUrl);
+                  });
+                } else {
+                  // Fallback: show the URL in an alert
+                  console.log('[HushMode] Clipboard not available, showing URL');
+                  Alert.alert('Store Link', storeUrl);
+                }
+              }
+            }
+          ]
         );
-        
-        // Try window.open first
-        const newWindow = window.open(storeUrl, '_blank');
-        
-        if (!newWindow || newWindow.closed || typeof newWindow.closed === 'undefined') {
-          // Popup blocked, fallback to location.href
-          console.log('[HushMode] window.open blocked, using location.href');
-          window.location.href = storeUrl;
-        } else {
-          console.log('[HushMode] Store opened in new tab');
-        }
         
       } else {
         // NATIVE (Android/iOS): Try deep link first, then store fallback
