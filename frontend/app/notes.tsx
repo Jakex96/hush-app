@@ -27,6 +27,7 @@ export default function NotesScreen() {
   }, []);
 
   const handleDeleteNote = (id: string) => {
+    console.log('[NotesScreen] ⚠️ DELETE BUTTON PRESSED - ID:', id);
     Alert.alert(
       t('deleteNote'),
       t('deleteNoteConfirm'),
@@ -36,9 +37,9 @@ export default function NotesScreen() {
           text: t('delete'),
           style: 'destructive',
           onPress: async () => {
-            console.log('[NotesScreen] Deleting note:', id);
+            console.log('[NotesScreen] ✓ User confirmed delete - ID:', id);
             await deleteNote(id);
-            console.log('[NotesScreen] Delete complete');
+            console.log('[NotesScreen] ✓ Delete complete');
           },
         },
       ]
@@ -142,16 +143,26 @@ export default function NotesScreen() {
                 </View>
 
                 {item.photoUri && (
-                  <Image source={{ uri: item.photoUri }} style={styles.noteImage} />
+                  <Image 
+                    source={{ uri: item.photoUri }} 
+                    style={styles.noteImage}
+                    pointerEvents="none"
+                  />
                 )}
               </TouchableOpacity>
 
-              {/* Delete button - positioned to avoid overlap */}
+              {/* Delete button - MUST be touchable, elevated above all content */}
               <TouchableOpacity
                 style={styles.deleteButton}
-                onPress={() => handleDeleteNote(item.id)}
-                hitSlop={{ top: 15, bottom: 15, left: 15, right: 15 }}
+                onPress={() => {
+                  console.log('[NotesScreen] 🔥 TRASH ICON TAPPED - Item ID:', item.id);
+                  handleDeleteNote(item.id);
+                }}
+                hitSlop={{ top: 20, bottom: 20, left: 20, right: 20 }}
                 activeOpacity={0.6}
+                accessible={true}
+                accessibilityLabel="Delete note"
+                accessibilityRole="button"
               >
                 <Ionicons name="trash-outline" size={22} color={COLORS.textSecondary} />
               </TouchableOpacity>
@@ -216,15 +227,13 @@ const styles = StyleSheet.create({
   },
   noteCardContainer: {
     marginBottom: SPACING.md,
-    flexDirection: 'row',
-    alignItems: 'flex-start',
-    gap: SPACING.xs,
+    position: 'relative',
   },
   noteCard: {
-    flex: 1,
     backgroundColor: COLORS.surface,
     borderRadius: 12,
     padding: SPACING.md,
+    paddingRight: 56, // Make room for delete button
     flexDirection: 'row',
     gap: SPACING.md,
   },
@@ -273,11 +282,18 @@ const styles = StyleSheet.create({
     borderRadius: 8,
   },
   deleteButton: {
+    position: 'absolute',
+    top: SPACING.sm,
+    right: SPACING.sm,
     padding: SPACING.sm,
     backgroundColor: COLORS.surface,
     borderRadius: 20,
-    alignSelf: 'flex-start',
-    marginTop: SPACING.xs,
+    zIndex: 999,
+    elevation: 10,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.25,
+    shadowRadius: 3.84,
   },
   fab: {
     position: 'absolute',
