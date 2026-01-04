@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import {
   View,
   Text,
@@ -6,10 +6,16 @@ import {
   TouchableOpacity,
   StatusBar,
   Dimensions,
+  Linking,
+  Alert,
+  Platform,
+  Modal,
+  Pressable,
 } from 'react-native';
 import { useRouter } from 'expo-router';
 import { Ionicons } from '@expo/vector-icons';
 import { useHushStore } from '../store/hushStore';
+import { useSettingsStore } from '../store/settingsStore';
 import { getTranslation } from '../constants/translations';
 import { LanguageSwitcher } from '../components/LanguageSwitcher';
 import { COLORS, SPACING, TYPOGRAPHY } from '../constants/theme';
@@ -19,10 +25,14 @@ const { width } = Dimensions.get('window');
 export default function Home() {
   const router = useRouter();
   const { isHushActive, loadState, language } = useHushStore();
+  const { allowExternalApps, loadSettings } = useSettingsStore();
+  const [showConfirmModal, setShowConfirmModal] = useState(false);
+  const [selectedApp, setSelectedApp] = useState<{name: string, url: string} | null>(null);
 
   useEffect(() => {
     // Load saved state on mount
     loadState();
+    loadSettings();
   }, []);
 
   useEffect(() => {
@@ -36,15 +46,61 @@ export default function Home() {
     router.push('/duration');
   };
 
+  const handleOpenSettings = () => {
+    router.push('/settings');
+  };
+
+  const handleExternalAppPress = (appName: string, deepLink: string) => {
+    setSelectedApp({ name: appName, url: deepLink });
+    setShowConfirmModal(true);
+  };
+
+  const handleConfirmOpenApp = async () => {
+    setShowConfirmModal(false);
+    if (!selectedApp) return;
+
+    try {
+      const canOpen = await Linking.canOpenURL(selectedApp.url);
+      if (canOpen) {
+        await Linking.openURL(selectedApp.url);
+        console.log('[ExternalApps] Opened:', selectedApp.name);
+      } else {
+        // Fallback: open app store search
+        const storeUrl = Platform.OS === 'ios' 
+          ? `https://apps.apple.com/search?term=${encodeURIComponent(selectedApp.name)}`
+          : `https://play.google.com/store/search?q=${encodeURIComponent(selectedApp.name)}&c=apps`;
+        
+        const canOpenStore = await Linking.canOpenURL(storeUrl);
+        if (canOpenStore) {
+          await Linking.openURL(storeUrl);
+        } else {
+          Alert.alert(
+            'App not found',
+            `Install your ${selectedApp.name} app from Google Play / App Store.`
+          );
+        }
+      }
+    } catch (error) {
+      console.error('[ExternalApps] Error opening app:', error);
+      Alert.alert(
+        'App not found',
+        `Install your ${selectedApp.name} app from Google Play / App Store.`
+      );
+    }
+  };
+
   const t = (key: Parameters<typeof getTranslation>[1]) => getTranslation(language, key);
 
   return (
     <View style={styles.container}>
       <StatusBar barStyle="light-content" backgroundColor={COLORS.background} />
       
-      {/* Language Switcher */}
-      <View style={styles.languageContainer}>
+      {/* Top Bar */}
+      <View style={styles.topBar}>
         <LanguageSwitcher />
+        <TouchableOpacity onPress={handleOpenSettings} style={styles.settingsButton}>
+          <Ionicons name="settings-outline" size={24} color={COLORS.text} />
+        </TouchableOpacity>
       </View>
       
       <View style={styles.content}>
@@ -74,7 +130,67 @@ export default function Home() {
 
         {/* Info Text */}
         <Text style={styles.infoText}>{t('essentialsAccessible')}</Text>
+
+        {/* External Apps Section */}
+        {allowExternalApps && (
+          <View style={styles.externalAppsSection}>
+            <Text style={styles.externalAppsTitle}>External Apps</Text>
+            <View style={styles.externalAppsGrid}>
+              <TouchableOpacity
+                style={styles.externalAppCard}
+                onPress={() => handleExternalAppPress('Bank', 'bank://')}
+                activeOpacity={0.7}
+              >
+                <Ionicons name="card-outline" size={32} color={COLORS.accent} />
+                <Text style={styles.externalAppLabel}>Bank</Text>
+              </TouchableOpacity>
+
+              <TouchableOpacity
+                style={styles.externalAppCard}
+                onPress={() => handleExternalAppPress('Auth', 'authenticator://')}
+                activeOpacity={0.7}
+              >
+                <Ionicons name="shield-checkmark-outline" size={32} color={COLORS.accent} />
+                <Text style={styles.externalAppLabel}>Auth</Text>
+              </TouchableOpacity>
+            </View>
+          </View>
+        )}
       </View>
+
+      {/* Confirmation Modal */}
+      <Modal
+        visible={showConfirmModal}
+        transparent
+        animationType="fade"
+        onRequestClose={() => setShowConfirmModal(false)}
+      >
+        <Pressable 
+          style={styles.modalOverlay}
+          onPress={() => setShowConfirmModal(false)}
+        >
+          <Pressable style={styles.modalContent} onPress={(e) => e.stopPropagation()}>
+            <Text style={styles.modalTitle}>Open external app?</Text>
+            <Text style={styles.modalBody}>
+              This will open an app outside HUSH and pause your focus session. Continue?
+            </Text>
+            <View style={styles.modalButtons}>
+              <TouchableOpacity
+                style={[styles.modalButton, styles.modalButtonCancel]}
+                onPress={() => setShowConfirmModal(false)}
+              >
+                <Text style={styles.modalButtonText}>Cancel</Text>
+              </TouchableOpacity>
+              <TouchableOpacity
+                style={[styles.modalButton, styles.modalButtonConfirm]}
+                onPress={handleConfirmOpenApp}
+              >
+                <Text style={styles.modalButtonText}>Open</Text>
+              </TouchableOpacity>
+            </View>
+          </Pressable>
+        </Pressable>
+      </Modal>
     </View>
   );
 }
