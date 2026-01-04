@@ -262,4 +262,93 @@ const styles = StyleSheet.create({
     marginTop: SPACING.lg,
     textAlign: 'center',
   },
+  topBar: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    paddingHorizontal: SPACING.lg,
+    paddingTop: SPACING.xxl,
+  },
+  settingsButton: {
+    padding: SPACING.sm,
+  },
+  externalAppsSection: {
+    marginTop: SPACING.xl,
+    width: '100%',
+    paddingHorizontal: SPACING.lg,
+  },
+  externalAppsTitle: {
+    ...TYPOGRAPHY.bodyLarge,
+    color: COLORS.textSecondary,
+    fontWeight: '600',
+    marginBottom: SPACING.md,
+    textAlign: 'center',
+  },
+  externalAppsGrid: {
+    flexDirection: 'row',
+    gap: SPACING.md,
+    justifyContent: 'center',
+  },
+  externalAppCard: {
+    backgroundColor: COLORS.surface,
+    padding: SPACING.lg,
+    borderRadius: 12,
+    alignItems: 'center',
+    justifyContent: 'center',
+    minWidth: 100,
+    gap: SPACING.sm,
+  },
+  externalAppLabel: {
+    ...TYPOGRAPHY.body,
+    color: COLORS.text,
+    fontWeight: '600',
+  },
+  modalOverlay: {
+    flex: 1,
+    backgroundColor: 'rgba(0,0,0,0.7)',
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  modalContent: {
+    backgroundColor: COLORS.surface,
+    padding: SPACING.xl,
+    borderRadius: 16,
+    width: width - SPACING.xl * 4,
+    maxWidth: 400,
+  },
+  modalTitle: {
+    ...TYPOGRAPHY.h3,
+    color: COLORS.text,
+    fontWeight: '600',
+    marginBottom: SPACING.md,
+    textAlign: 'center',
+  },
+  modalBody: {
+    ...TYPOGRAPHY.body,
+    color: COLORS.textSecondary,
+    textAlign: 'center',
+    marginBottom: SPACING.xl,
+    lineHeight: 22,
+  },
+  modalButtons: {
+    flexDirection: 'row',
+    gap: SPACING.md,
+  },
+  modalButton: {
+    flex: 1,
+    paddingVertical: SPACING.md,
+    borderRadius: 12,
+    alignItems: 'center',
+  },
+  modalButtonCancel: {
+    backgroundColor: COLORS.background,
+  },
+  modalButtonConfirm: {
+    backgroundColor: COLORS.accent,
+  },
+  modalButtonText: {
+    ...TYPOGRAPHY.body,
+    color: COLORS.text,
+    fontWeight: '600',
+  },
 });
