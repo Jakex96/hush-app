@@ -3,7 +3,6 @@ import {
   View,
   Text,
   StyleSheet,
-  TouchableOpacity,
   FlatList,
   Alert,
   Image,
@@ -29,15 +28,17 @@ export default function NotesScreen() {
   }, []);
 
   const handleDeleteNote = (id: string) => {
-    if (__DEV__) {
-      console.log('[Notes] trash tapped', id);
-    }
+    console.log('[Notes] Delete initiated for ID:', id);
 
-    // Cross-platform confirmation
+    const confirmDelete = () => {
+      console.log('[Notes] User confirmed delete for ID:', id);
+      performDelete(id);
+    };
+
     if (Platform.OS === 'web') {
-      const confirmed = window.confirm('Delete this note? This cannot be undone.');
+      const confirmed = confirm('Delete this note? This action cannot be undone.');
       if (confirmed) {
-        performDelete(id);
+        confirmDelete();
       }
     } else {
       Alert.alert(
@@ -48,7 +49,7 @@ export default function NotesScreen() {
           {
             text: t('delete'),
             style: 'destructive',
-            onPress: () => performDelete(id),
+            onPress: confirmDelete,
           },
         ]
       );
@@ -56,31 +57,21 @@ export default function NotesScreen() {
   };
 
   const performDelete = async (id: string) => {
-    if (__DEV__) {
-      console.log('[Notes] confirmed delete', id);
-    }
     try {
+      console.log('[Notes] Performing delete for ID:', id);
+      console.log('[Notes] Notes count before delete:', notes.length);
+      
       await deleteNote(id);
-      const remainingNotes = notes.filter(n => n.id !== id);
-      if (__DEV__) {
-        console.log('[Notes] deleted; new count:', remainingNotes.length);
-      }
+      
+      console.log('[Notes] Delete complete');
     } catch (error) {
       console.error('[Notes] Delete failed:', error);
       if (Platform.OS === 'web') {
-        alert('Failed to delete note');
+        alert('Failed to delete note. Please try again.');
       } else {
-        Alert.alert('Error', 'Failed to delete note');
+        Alert.alert('Error', 'Failed to delete note. Please try again.');
       }
     }
-  };
-
-  // Long-press fallback for delete
-  const handleLongPress = (id: string) => {
-    if (__DEV__) {
-      console.log('[Notes] long press detected on note', id);
-    }
-    handleDeleteNote(id);
   };
 
   const formatTime = (timestamp: number) => {
@@ -121,13 +112,13 @@ export default function NotesScreen() {
     <View style={styles.container}>
       {/* Header */}
       <View style={styles.header}>
-        <TouchableOpacity
+        <Pressable
           onPress={() => router.back()}
           style={styles.backButton}
-          activeOpacity={0.7}
+          hitSlop={8}
         >
           <Ionicons name="arrow-back" size={24} color={COLORS.text} />
-        </TouchableOpacity>
+        </Pressable>
         <Text style={styles.headerTitle}>{t('notes')}</Text>
         <View style={{ width: 40 }} />
       </View>
@@ -143,16 +134,15 @@ export default function NotesScreen() {
         <FlatList
           data={notes}
           keyExtractor={(item) => item.id}
+          extraData={notes.length}
           contentContainerStyle={styles.listContent}
           renderItem={({ item }) => (
-            <View style={styles.noteCardContainer} pointerEvents="box-none">
+            <View style={styles.noteCardContainer}>
               <Pressable
                 style={styles.noteCard}
                 onPress={() => router.push(`/note-editor?id=${item.id}`)}
-                onLongPress={() => handleLongPress(item.id)}
-                delayLongPress={800}
               >
-                <View style={styles.noteContent} pointerEvents="none">
+                <View style={styles.noteContent}>
                   {item.title && <Text style={styles.noteTitle}>{item.title}</Text>}
                   <Text style={styles.noteBody} numberOfLines={3}>
                     {item.body}
@@ -184,26 +174,19 @@ export default function NotesScreen() {
                   <Image 
                     source={{ uri: item.photoUri }} 
                     style={styles.noteImage}
-                    pointerEvents="none"
                   />
                 )}
               </Pressable>
 
-              {/* Delete button - Absolutely positioned, elevated, clickable */}
+              {/* Delete button - Must be outside card Pressable, properly elevated */}
               <Pressable
                 style={styles.deleteButton}
-                onPress={(e) => {
-                  // Stop propagation on web
-                  if (Platform.OS === 'web' && e?.nativeEvent) {
-                    e.nativeEvent.stopPropagation?.();
-                  }
-                  if (__DEV__) {
-                    console.log('[Notes] 🔥 TRASH PRESSED - ID:', item.id);
-                  }
+                onPress={() => {
+                  console.log('[Notes] Trash icon pressed for ID:', item.id);
                   handleDeleteNote(item.id);
                 }}
-                hitSlop={{ top: 20, bottom: 20, left: 20, right: 20 }}
-                android_ripple={{ color: 'rgba(255,255,255,0.2)', radius: 20 }}
+                hitSlop={{ top: 15, bottom: 15, left: 15, right: 15 }}
+                android_ripple={{ color: 'rgba(255,255,255,0.1)', radius: 18 }}
               >
                 {({ pressed }) => (
                   <View style={[
@@ -212,7 +195,7 @@ export default function NotesScreen() {
                   ]}>
                     <Ionicons 
                       name="trash-outline" 
-                      size={22} 
+                      size={20} 
                       color={pressed ? '#FF6B6B' : COLORS.textSecondary} 
                     />
                   </View>
@@ -224,13 +207,12 @@ export default function NotesScreen() {
       )}
 
       {/* Floating Add Button */}
-      <TouchableOpacity
+      <Pressable
         style={styles.fab}
         onPress={() => router.push('/note-editor')}
-        activeOpacity={0.8}
       >
         <Ionicons name="add" size={32} color={COLORS.text} />
-      </TouchableOpacity>
+      </Pressable>
     </View>
   );
 }
@@ -285,7 +267,7 @@ const styles = StyleSheet.create({
     backgroundColor: COLORS.surface,
     borderRadius: 12,
     padding: SPACING.md,
-    paddingRight: 60, // Space for delete button
+    paddingRight: 56,
     flexDirection: 'row',
     gap: SPACING.md,
   },
@@ -308,6 +290,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     gap: SPACING.xs,
     marginBottom: SPACING.sm,
+    flexWrap: 'wrap',
   },
   tag: {
     paddingHorizontal: SPACING.sm,
@@ -335,21 +318,24 @@ const styles = StyleSheet.create({
   },
   deleteButton: {
     position: 'absolute',
-    top: 8,
-    right: 8,
-    zIndex: 1000,
-    elevation: 10,
+    top: 10,
+    right: 10,
+    zIndex: 100,
+    elevation: 5,
   },
   deleteButtonInner: {
-    padding: 10,
+    width: 36,
+    height: 36,
+    borderRadius: 18,
     backgroundColor: COLORS.surface,
-    borderRadius: 20,
+    alignItems: 'center',
+    justifyContent: 'center',
     borderWidth: 1,
-    borderColor: 'rgba(255,255,255,0.1)',
+    borderColor: 'rgba(255,255,255,0.05)',
   },
   deleteButtonPressed: {
-    backgroundColor: 'rgba(255,107,107,0.2)',
-    transform: [{ scale: 0.95 }],
+    backgroundColor: 'rgba(255,107,107,0.15)',
+    transform: [{ scale: 0.92 }],
   },
   fab: {
     position: 'absolute',
