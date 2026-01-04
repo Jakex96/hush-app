@@ -200,12 +200,6 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: COLORS.background,
   },
-  languageContainer: {
-    position: 'absolute',
-    top: SPACING.xxl + SPACING.md,
-    right: SPACING.lg,
-    zIndex: 10,
-  },
   content: {
     flex: 1,
     alignItems: 'center',
