@@ -6,17 +6,18 @@ import {
   Switch,
   Pressable,
   ScrollView,
+  TouchableOpacity,
 } from 'react-native';
 import { useRouter } from 'expo-router';
 import { Ionicons } from '@expo/vector-icons';
-import { useSettingsStore } from '../store/settingsStore';
+import { useSettingsStore, bankOptions, type BankOption } from '../store/settingsStore';
 import { useHushStore } from '../store/hushStore';
 import { getTranslation } from '../constants/translations';
 import { COLORS, SPACING, TYPOGRAPHY } from '../constants/theme';
 
 export default function SettingsScreen() {
   const router = useRouter();
-  const { allowExternalApps, setAllowExternalApps, loadSettings } = useSettingsStore();
+  const { allowExternalApps, selectedBank, setAllowExternalApps, setSelectedBank, loadSettings } = useSettingsStore();
   const { language } = useHushStore();
 
   const t = (key: Parameters<typeof getTranslation>[1]) => getTranslation(language, key);
@@ -27,6 +28,10 @@ export default function SettingsScreen() {
 
   const handleToggleExternalApps = async (value: boolean) => {
     await setAllowExternalApps(value);
+  };
+
+  const handleBankSelect = async (bank: BankOption) => {
+    await setSelectedBank(bank);
   };
 
   return (
@@ -51,9 +56,9 @@ export default function SettingsScreen() {
           
           <View style={styles.settingRow}>
             <View style={styles.settingInfo}>
-              <Text style={styles.settingLabel}>Allow External Essential Apps</Text>
+              <Text style={styles.settingLabel}>Allow External Apps</Text>
               <Text style={styles.settingDescription}>
-                Opens your bank / auth apps outside HUSH. HUSH will pause while the external app is open.
+                Enables opening bank apps outside HUSH mode.
               </Text>
             </View>
             <Switch
@@ -64,6 +69,34 @@ export default function SettingsScreen() {
               ios_backgroundColor={COLORS.textTertiary}
             />
           </View>
+
+          {/* Bank Selection */}
+          {allowExternalApps && (
+            <View style={styles.bankSection}>
+              <Text style={styles.bankSectionTitle}>Select Your Bank App</Text>
+              {bankOptions.map((option) => (
+                <TouchableOpacity
+                  key={option.value}
+                  style={[
+                    styles.bankOption,
+                    selectedBank === option.value && styles.bankOptionSelected
+                  ]}
+                  onPress={() => handleBankSelect(option.value as BankOption)}
+                  activeOpacity={0.7}
+                >
+                  <Text style={[
+                    styles.bankOptionText,
+                    selectedBank === option.value && styles.bankOptionTextSelected
+                  ]}>
+                    {option.label}
+                  </Text>
+                  {selectedBank === option.value && (
+                    <Ionicons name="checkmark-circle" size={24} color={COLORS.accent} />
+                  )}
+                </TouchableOpacity>
+              ))}
+            </View>
+          )}
         </View>
       </ScrollView>
     </View>
@@ -130,5 +163,37 @@ const styles = StyleSheet.create({
     ...TYPOGRAPHY.small,
     color: COLORS.textSecondary,
     lineHeight: 18,
+  },
+  bankSection: {
+    marginTop: SPACING.lg,
+  },
+  bankSectionTitle: {
+    ...TYPOGRAPHY.body,
+    color: COLORS.text,
+    fontWeight: '600',
+    marginBottom: SPACING.md,
+  },
+  bankOption: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    backgroundColor: COLORS.surface,
+    padding: SPACING.md,
+    borderRadius: 8,
+    marginBottom: SPACING.xs,
+    borderWidth: 2,
+    borderColor: 'transparent',
+  },
+  bankOptionSelected: {
+    borderColor: COLORS.accent,
+    backgroundColor: 'rgba(139, 92, 246, 0.1)',
+  },
+  bankOptionText: {
+    ...TYPOGRAPHY.body,
+    color: COLORS.text,
+  },
+  bankOptionTextSelected: {
+    color: COLORS.accent,
+    fontWeight: '600',
   },
 });
