@@ -337,7 +337,7 @@ export default function HushMode() {
         </TouchableOpacity>
         
         <TouchableOpacity
-          onPress={() => setShowSettings(true)}
+          onPress={handleOpenSettings}
           style={styles.headerButton}
           activeOpacity={0.7}
         >
