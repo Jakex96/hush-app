@@ -459,6 +459,21 @@ export default function HushMode() {
           </View>
         </View>
 
+        {/* External Apps Section */}
+        {allowExternalApps && (
+          <View style={styles.externalAppsSection}>
+            <Text style={styles.sectionSubtitle}>External Apps</Text>
+            <TouchableOpacity
+              style={styles.externalBankButton}
+              onPress={handleBankPress}
+              activeOpacity={0.7}
+            >
+              <Ionicons name="card-outline" size={32} color={COLORS.accent} />
+              <Text style={styles.externalBankButtonText}>Bank</Text>
+            </TouchableOpacity>
+          </View>
+        )}
+
         {/* Info Text */}
         <View style={styles.infoContainer}>
           <Ionicons name="lock-closed" size={16} color={COLORS.textTertiary} />
