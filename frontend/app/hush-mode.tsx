@@ -482,6 +482,46 @@ export default function HushMode() {
           </Text>
         </View>
       </View>
+
+      {/* Bank Confirmation Modal */}
+      <Modal
+        visible={showBankModal}
+        transparent
+        animationType="fade"
+        onRequestClose={() => setShowBankModal(false)}
+      >
+        <Pressable 
+          style={styles.bankModalOverlay}
+          onPress={() => setShowBankModal(false)}
+        >
+          <Pressable 
+            style={styles.bankModalContent} 
+            onPress={(e) => e.stopPropagation()}
+          >
+            <Ionicons name="card-outline" size={48} color={COLORS.accent} style={{ marginBottom: SPACING.md }} />
+            <Text style={styles.bankModalTitle}>Open bank app?</Text>
+            <Text style={styles.bankModalBody}>
+              This will open an app outside HUSH. Continue?
+            </Text>
+            <View style={styles.bankModalButtons}>
+              <TouchableOpacity
+                style={[styles.bankModalButton, styles.bankModalButtonCancel]}
+                onPress={() => setShowBankModal(false)}
+              >
+                <Text style={styles.bankModalButtonText}>Cancel</Text>
+              </TouchableOpacity>
+              <TouchableOpacity
+                style={[styles.bankModalButton, styles.bankModalButtonOpen]}
+                onPress={handleOpenBank}
+              >
+                <Text style={[styles.bankModalButtonText, styles.bankModalButtonOpenText]}>
+                  Open
+                </Text>
+              </TouchableOpacity>
+            </View>
+          </Pressable>
+        </Pressable>
+      </Modal>
     </View>
   );
 }
