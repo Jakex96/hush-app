@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import {
   View,
   Text,
@@ -8,6 +8,8 @@ import {
   Image,
   Platform,
   Pressable,
+  Modal,
+  TouchableOpacity,
 } from 'react-native';
 import { useRouter } from 'expo-router';
 import { Ionicons } from '@expo/vector-icons';
@@ -20,6 +22,8 @@ export default function NotesScreen() {
   const router = useRouter();
   const { notes, loadNotes, deleteNote } = useNotesStore();
   const { language } = useHushStore();
+  const [showDeleteModal, setShowDeleteModal] = useState(false);
+  const [noteToDelete, setNoteToDelete] = useState<string | null>(null);
 
   const t = (key: Parameters<typeof getTranslation>[1]) => getTranslation(language, key);
 
@@ -29,48 +33,44 @@ export default function NotesScreen() {
 
   const handleDeleteNote = (id: string) => {
     console.log('[Notes] Delete initiated for ID:', id);
+    
+    // Find and log the full note object
+    const noteObj = notes.find(n => n.id === id);
+    console.log('[Notes] Note object being deleted:', noteObj);
+    console.log('[Notes] Note ID type:', typeof id, 'Value:', id);
+    console.log('[Notes] All note IDs in store:', notes.map(n => ({ id: n.id, type: typeof n.id })));
+    
+    setNoteToDelete(id);
+    setShowDeleteModal(true);
+  };
 
-    const confirmDelete = () => {
-      console.log('[Notes] User confirmed delete for ID:', id);
-      performDelete(id);
-    };
-
-    if (Platform.OS === 'web') {
-      const confirmed = confirm('Delete this note? This action cannot be undone.');
-      if (confirmed) {
-        confirmDelete();
-      }
-    } else {
-      Alert.alert(
-        t('deleteNote'),
-        t('deleteNoteConfirm'),
-        [
-          { text: t('cancel'), style: 'cancel' },
-          {
-            text: t('delete'),
-            style: 'destructive',
-            onPress: confirmDelete,
-          },
-        ]
-      );
+  const handleConfirmDelete = () => {
+    setShowDeleteModal(false);
+    if (noteToDelete) {
+      console.log('[Notes] User confirmed delete for ID:', noteToDelete);
+      performDelete(noteToDelete);
     }
+  };
+
+  const handleCancelDelete = () => {
+    console.log('[Notes] User cancelled delete');
+    setShowDeleteModal(false);
+    setNoteToDelete(null);
   };
 
   const performDelete = async (id: string) => {
     try {
       console.log('[Notes] Performing delete for ID:', id);
       console.log('[Notes] Notes count before delete:', notes.length);
+      console.log('[Notes] Notes array before delete:', notes.map(n => n.id));
       
       await deleteNote(id);
       
-      console.log('[Notes] Delete complete');
+      console.log('[Notes] Delete complete - notes count after:', notes.length);
+      setNoteToDelete(null);
     } catch (error) {
       console.error('[Notes] Delete failed:', error);
-      if (Platform.OS === 'web') {
-        alert('Failed to delete note. Please try again.');
-      } else {
-        Alert.alert('Error', 'Failed to delete note. Please try again.');
-      }
+      Alert.alert('Error', 'Failed to delete note. Please try again.');
     }
   };
 
@@ -213,6 +213,46 @@ export default function NotesScreen() {
       >
         <Ionicons name="add" size={32} color={COLORS.text} />
       </Pressable>
+
+      {/* Delete Confirmation Modal */}
+      <Modal
+        visible={showDeleteModal}
+        transparent
+        animationType="fade"
+        onRequestClose={handleCancelDelete}
+      >
+        <Pressable 
+          style={styles.modalOverlay}
+          onPress={handleCancelDelete}
+        >
+          <Pressable 
+            style={styles.deleteModalContent} 
+            onPress={(e) => e.stopPropagation()}
+          >
+            <Ionicons name="trash-outline" size={48} color="#FF6B6B" style={{ marginBottom: SPACING.md }} />
+            <Text style={styles.deleteModalTitle}>Delete Note?</Text>
+            <Text style={styles.deleteModalBody}>
+              This action cannot be undone. The note will be permanently deleted.
+            </Text>
+            <View style={styles.deleteModalButtons}>
+              <TouchableOpacity
+                style={[styles.deleteModalButton, styles.deleteModalButtonCancel]}
+                onPress={handleCancelDelete}
+              >
+                <Text style={styles.deleteModalButtonText}>Cancel</Text>
+              </TouchableOpacity>
+              <TouchableOpacity
+                style={[styles.deleteModalButton, styles.deleteModalButtonDelete]}
+                onPress={handleConfirmDelete}
+              >
+                <Text style={[styles.deleteModalButtonText, styles.deleteModalButtonDeleteText]}>
+                  Delete
+                </Text>
+              </TouchableOpacity>
+            </View>
+          </Pressable>
+        </Pressable>
+      </Modal>
     </View>
   );
 }
@@ -352,5 +392,60 @@ const styles = StyleSheet.create({
     shadowOffset: { width: 0, height: 4 },
     shadowOpacity: 0.3,
     shadowRadius: 8,
+  },
+  modalOverlay: {
+    flex: 1,
+    backgroundColor: 'rgba(0,0,0,0.75)',
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  deleteModalContent: {
+    backgroundColor: COLORS.surface,
+    padding: SPACING.xl,
+    borderRadius: 16,
+    width: '85%',
+    maxWidth: 400,
+    alignItems: 'center',
+  },
+  deleteModalTitle: {
+    ...TYPOGRAPHY.h3,
+    color: COLORS.text,
+    fontWeight: '600',
+    marginBottom: SPACING.sm,
+    textAlign: 'center',
+  },
+  deleteModalBody: {
+    ...TYPOGRAPHY.body,
+    color: COLORS.textSecondary,
+    textAlign: 'center',
+    marginBottom: SPACING.xl,
+    lineHeight: 22,
+  },
+  deleteModalButtons: {
+    flexDirection: 'row',
+    gap: SPACING.md,
+    width: '100%',
+  },
+  deleteModalButton: {
+    flex: 1,
+    paddingVertical: SPACING.md,
+    borderRadius: 12,
+    alignItems: 'center',
+  },
+  deleteModalButtonCancel: {
+    backgroundColor: COLORS.background,
+    borderWidth: 1,
+    borderColor: 'rgba(255,255,255,0.1)',
+  },
+  deleteModalButtonDelete: {
+    backgroundColor: '#FF6B6B',
+  },
+  deleteModalButtonText: {
+    ...TYPOGRAPHY.body,
+    color: COLORS.text,
+    fontWeight: '600',
+  },
+  deleteModalButtonDeleteText: {
+    color: '#FFFFFF',
   },
 });
